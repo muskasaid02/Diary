@@ -1,6 +1,6 @@
 # Ignore node_modules folders
 frontend/node_modules/
 backend/node_modules/
-backend/.gitignore/.env
+backend/.env
 
 
