@@ -14,7 +14,7 @@ export const useLogin = () => {
         setError(null);
     
         try {
-            const response = await fetch('https://diary-backend-utp0.onrender.com', {
+            const response = await fetch('https://diary-backend-utp0.onrender.com/api/user/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
