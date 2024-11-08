@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import { useAuthContext } from './useAuthContext.js';
 
+
 export const useLogin = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const { dispatch } = useAuthContext();
 
+
     const login = async (email, password) => {
         setLoading(true);
         setError(null);
-
+    
         try {
             const response = await fetch('https://diary-backend-utp0.onrender.com', {
                 method: 'POST',
@@ -19,14 +21,14 @@ export const useLogin = () => {
                 },
                 body: JSON.stringify({ email, password })
             });
-
+    
             const json = await response.json();
-
+    
             if (!response.ok) {
                 setLoading(false);
                 setError(json.error);
             }
-
+    
             if (response.ok) {
                 localStorage.setItem('user', JSON.stringify(json));
                 dispatch({ type: 'LOGIN', payload: json });
@@ -37,6 +39,7 @@ export const useLogin = () => {
             console.log(err);
         }
     };
+    
 
     return { login, error, loading };
 };

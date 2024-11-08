@@ -28,7 +28,6 @@ const connectDB = async () => {
             //useNewUrlParser: true,
             //useUnifiedTopology: true
         });
-
         console.log('MongoDB connected');
     } catch (err) {
         console.error(err.message);
@@ -39,5 +38,4 @@ const connectDB = async () => {
 connectDB().then(() => {
     app.listen(port, () => console.log(`listening on port ${port}`));
 }).catch(err => console.log(err));
-
 
