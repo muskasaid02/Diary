@@ -9,21 +9,22 @@ const PostHead = ({ post }) => {
     const { user } = useAuthContext();
 
     const handleClick = async () => {
-        const response = await fetch(`https://diary-backend-utp0.onrender.com/${post._id}`, {
+        const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${post._id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${user.token}`
             }
         });
-
-        const body = await response.text();
-        const json = JSON.parse(body);
-
+    
         if (response.ok) {
-            dispatch({ type: 'DELETE_POST', payload: json });
-            console.log('post deleted', json);
+            const json = await response.json();
+            dispatch({ type: 'DELETE_POST', payload: post._id });
+            console.log('Post deleted:', post._id);
+        } else {
+            console.error('Failed to delete post:', response.statusText);
         }
     };
+    
 
     return (
         <li>
