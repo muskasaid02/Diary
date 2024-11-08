@@ -1,13 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
+import { PostsContextProvider } from './context/PostsContext';
+import { AuthContextProvider } from './context/AuthContext';
+import './styles/index.scss';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+    <React.StrictMode>
+        <AuthContextProvider>
+            <PostsContextProvider>
+                <Router>
+                    <App />
+                </Router>
+            </PostsContextProvider>
+        </AuthContextProvider>
+    </React.StrictMode>
 );
-
-
