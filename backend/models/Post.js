@@ -8,13 +8,18 @@ const PostSchema = new Schema({
     },
 
     title: {
-        type: String, 
+        type: String,
+        required: true
+    },
+    
+    content: {
+        type: String,
         required: true
     },
 
-    content: {
-        type: String, 
-        required: true
+    user_id: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
     }
 }, {
     collection: 'posts',
