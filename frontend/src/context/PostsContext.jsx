@@ -16,7 +16,9 @@ export const postsReducer = (state, action) => {
         case 'DELETE_POST':
             return {
                 ...state,
-                posts: state.posts.filter(post => post._id !== action.payload)//._id)
+                posts: state.posts.filter(post => post._id !== action.payload)//._id) 
+                //removed that aspect because only post ID was being passed earlier 
+                //frontend would not reflect the change immediately
             };
         default:
             return state;
