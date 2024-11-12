@@ -41,11 +41,13 @@ const Home = () => {
             <div>
                 <h1> Posts </h1>
 
-                <ul className={styles.postList}>
+                <div className={styles.postContainer}>
                     {posts && posts.map(post => (
-                        <PostHead key={post._id} post={post} />
+                        <div key={post._id} className={styles.postCard}>
+                            <PostHead post={post} />
+                        </div>
                     ))}
-                </ul>
+                </div>
             </div>
 
             <div>
