@@ -1,7 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { useLogout } from '../hooks/useLogout.js';
-import styles from '../styles/styles.module.scss';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
 
 const NavBar = () => {
     const { user } = useAuthContext();
@@ -10,31 +15,50 @@ const NavBar = () => {
     const handleClick = () => logout();
 
     return (
-        <header className={styles.navbar}>
-            <nav>
-                <ul>
-                    <li> 
-                        <Link to="/"> Home </Link>
-                    </li>
-                </ul>
-            </nav>
+        <AppBar position="static" sx={{ backgroundColor: '#1976d2', paddingY: 1 }}>
+            <Container maxWidth="lg">
+                <Toolbar sx={{ minHeight: '20% !important' }}>
+                    {/* Left-aligned Home link */}
+                    <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-start' }}>
+                        <Typography variant="h6" component="div">
+                            <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
+                                Home
+                            </Link>
+                        </Typography>
+                    </Box>
 
-            <span className={styles['navbar-brand']}> The Diary App </span>
+                    {/* Centered Title */}
+                    <Box sx={{ display: 'flex', justifyContent: 'center', flexGrow: 1 }}>
+                        <Typography variant="h6" component="div">
+                            The Diary App
+                        </Typography>
+                    </Box>
 
-            {user ? (
-                <div>
-                    <span>{ user.email }</span>
-                    <button onClick={handleClick}>
-                        Logout
-                    </button>
-                </div>
-            ) : (
-                <div>
-                    <Link to="/api/login"> Login </Link>
-                    <Link to="/api/signup"> Signup </Link>
-                </div>
-            )}
-        </header>
+                    {/* Right-aligned Login/Signup or Logout */}
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', flexGrow: 1 }}>
+                        {user ? (
+                            <>
+                                <Typography variant="body1" sx={{ marginRight: 2 }}>
+                                    {user.email}
+                                </Typography>
+                                <Button color="inherit" onClick={handleClick}>
+                                    Logout
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Button color="inherit" component={Link} to="/api/login">
+                                    Login
+                                </Button>
+                                <Button color="inherit" component={Link} to="/api/signup">
+                                    Signup
+                                </Button>
+                            </>
+                        )}
+                    </Box>
+                </Toolbar>
+            </Container>
+        </AppBar>
     );
 };
 
