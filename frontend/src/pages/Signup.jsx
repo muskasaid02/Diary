@@ -1,6 +1,13 @@
 import { useForm } from "react-hook-form";
 import { useSignup } from "../hooks/useSignup.js";
-import styles from '../styles/styles.module.scss';
+import {
+    Container,
+    Box,
+    TextField,
+    Typography,
+    Button,
+    Paper,
+} from '@mui/material';
 
 const Signup = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
@@ -12,60 +19,67 @@ const Signup = () => {
     };
 
     return (
-        <div 
-            className={styles['login-container']}
-            style={{
-                backgroundImage: `url(${process.env.PUBLIC_URL}/background.jpg)`,
+        <Box
+            sx={{
+                //backgroundImage: `url(${process.env.PUBLIC_URL}/background.jpg)`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
                 backgroundAttachment: 'fixed',
-                width: '110vw',       
-                height: '92.8vh',      
+                width: '100vw',
+                height: '100vh',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                transform: 'translateX(-2%)translateY(-3.2%)',
             }}
         >
-            <form className={styles.loginForm} onSubmit={handleSubmit(onSubmit)}>
-                <h3 style={{ marginBottom: '0.4rem' }}> Sign Up </h3>
-                <input 
-                    type="email" 
-                    {...register("email", { required: 'required field' })}
-                    placeholder="email"
-                    autoComplete="off"
-                />
-                <p>{ errors.email?.message }</p>
-                <input 
-                    type="password" 
-                    {...register("password", { required: 'required field' })}
-                    placeholder="password"
-                />
-                <p>{ errors.password?.message }</p>
-                {error && <div>{ error }</div>}
-
-                <div
-                    style={{
-                        position: 'absolute',
-                        bottom: '-50px', 
-                        left: '50%',
-                        transform: 'translateX(75%)translateY(200%)'
-                    }}
-                >
-                    <button 
-                        className={styles.submit} 
-                        type="submit"
-                        disabled={loading}
-                    > 
+            <Container maxWidth="xs">
+                <Paper elevation={3} sx={{ padding: 4, textAlign: 'center' }}>
+                    <Typography variant="h5" gutterBottom>
                         Sign Up
-                    </button>
-                </div>
-            </form>
-        </div>
+                    </Typography>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <TextField
+                            fullWidth
+                            label="Email"
+                            type="email"
+                            {...register("email", { required: 'required field' })}
+                            error={!!errors.email}
+                            helperText={errors.email ? errors.email.message : ""}
+                            margin="normal"
+                        />
+                        <TextField
+                            fullWidth
+                            label="Password"
+                            type="password"
+                            {...register("password", { required: 'required field' })}
+                            error={!!errors.password}
+                            helperText={errors.password ? errors.password.message : ""}
+                            margin="normal"
+                        />
+                        {error && (
+                            <Typography color="error" variant="body2">
+                                {error}
+                            </Typography>
+                        )}
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                            disabled={loading}
+                            sx={{ marginTop: 2 }}
+                        >
+                            Sign Up
+                        </Button>
+                    </form>
+                </Paper>
+            </Container>
+        </Box>
     );
-}
+};
 
 export default Signup;
+
 
 

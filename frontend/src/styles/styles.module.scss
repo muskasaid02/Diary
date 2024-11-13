@@ -61,7 +61,7 @@
     }
 
     .navbar-brand {
-        font-weight: bolder;
+        font-weight: normal;
         color: #000000fd; 
     }
 
@@ -154,59 +154,59 @@
 }
 
 
-.loginForm {
-    width: 100%;
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    padding: 2rem;
-    background-color: #ffffff18;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(5, 5, 5, 0.1);
-    margin: auto;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -90%);
+// .loginForm {
+//     width: 100%;
+//     max-width: 400px;
+//     display: flex;
+//     flex-direction: column;
+//     padding: 2rem;
+//     background-color: #ffffff18;
+//     border-radius: 8px;
+//     box-shadow: 0 4px 12px rgba(5, 5, 5, 0.1);
+//     margin: auto;
+//     position: fixed;
+//     top: 50%;
+//     left: 50%;
+//     transform: translate(-50%, -90%);
 
-    & > input {
-        margin-bottom: 1rem;
-        padding: 0.75rem;
-        font-size: 1rem;
-        border: 1px solid #8c04e0;
-        border-radius: 4px;
-    }
+//     & > input {
+//         margin-bottom: 1rem;
+//         padding: 0.75rem;
+//         font-size: 1rem;
+//         border: 1px solid #8c04e0;
+//         border-radius: 4px;
+//     }
 
-    .loginSignUpToggle {
-        height: 40px;
-        background-color: #fbc02d;
-        margin-bottom: 1rem;
-        border: none;
-        border-radius: 4px;
-        font-size: 1rem;
-        cursor: pointer;
-        color: #333;
-    }
+//     .loginSignUpToggle {
+//         height: 40px;
+//         background-color: #fbc02d;
+//         margin-bottom: 1rem;
+//         border: none;
+//         border-radius: 4px;
+//         font-size: 1rem;
+//         cursor: pointer;
+//         color: #333;
+//     }
 
-    h3 {
-        margin: 0 auto 1.5rem auto;
-        font-size: 1.5rem;
-        color: #333;
-    }
+//     h3 {
+//         margin: 0 auto 1.5rem auto;
+//         font-size: 1.5rem;
+//         color: #333;
+//     }
 
-    .submit {
-        height: 40px;
-        background-color: #fc06b200;
-        color: rgb(1, 14, 21);
-        font-size: 1.5rem;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: background-color 0.3s;
+//     .submit {
+//         height: 40px;
+//         background-color: #fc06b200;
+//         color: rgb(1, 14, 21);
+//         font-size: 1.5rem;
+//         border: none;
+//         border-radius: 4px;
+//         cursor: pointer;
+//         font-weight: bold;
+//         transition: background-color 0.3s;
 
-        &:hover {
-            background-color: #0080ff4f;
-        }
-    }
-}
+//         &:hover {
+//             background-color: #0080ff4f;
+//         }
+//     }
+// }
