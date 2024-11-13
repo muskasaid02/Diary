@@ -43,7 +43,7 @@
 .navbar {
     background-color: rgba(150, 208, 189, 0.609); //adjust later to blend w background
     backdrop-filter: blur(8px); 
-    padding: 1rem;
+    padding: 3rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -61,7 +61,7 @@
     }
 
     .navbar-brand {
-        font-weight: normal;
+        font-weight: bolder;
         color: #000000fd; 
     }
 

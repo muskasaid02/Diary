@@ -25,7 +25,7 @@ const Login = () => {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                transform: 'translateX(-2%)translateY(-3.2%)',
+                transform: 'translateX(-2%)translateY(3.2%)',
                 
             }}
         >
