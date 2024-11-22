@@ -17,10 +17,10 @@ const NavBar = () => {
     return (
         <AppBar position="static" sx={{ backgroundColor: '#1976d2', paddingY: 1 }}>
             <Container maxWidth="lg">
-                <Toolbar sx={{ minHeight: '20% !important', display: 'flex', justifyContent: 'space-between' }}>
+                <Toolbar sx={{ minHeight: '20% !important', display: 'flex', justifyContent: 'space-between'}}>
                     
-                    {/* Left-aligned Home link with translateX to adjust horizontal position */}
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-start', transform: 'translateX(-270%)translateY(-20%)' }}>
+                    {/*Home*/}
+                    <Box sx={{ display: 'flex', justifyContent: 'left', flex: 1,}}>
                         <Typography variant="h6" component="div">
                             <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
                                 Home
@@ -28,15 +28,15 @@ const NavBar = () => {
                         </Typography>
                     </Box>
 
-                    {/* Centered Title with optional translateY to move it vertically */}
-                    <Box sx={{ display: 'flex', justifyContent: 'center', transform: 'translateY(-20%)' }}>
+                    {/*Title*/}
+                    <Box sx={{ display: 'flex', justifyContent: 'center' , flex: 1, }}>
                         <Typography variant="h6" component="div">
                             The Diary App
                         </Typography>
                     </Box>
 
-                    {/* Right-aligned Login/Signup or Logout with translateX to adjust position */}
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', transform: 'translateX(130%)translateY(-20%)' }}>
+                    {/*Login/Signup*/}
+                    <Box sx={{ display: 'flex', justifyContent: 'right', flex: 1, }}>
                         {user ? (
                             <>
                                 <Typography variant="body1" sx={{ marginRight: 2 }}>
