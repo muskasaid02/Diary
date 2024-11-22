@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
-import { HashLoader } from 'react-spinners';
 import { usePostsContext } from '../hooks/usePostsContext.js';
 import { useAuthContext } from '../hooks/useAuthContext.js';
 import PostHead from '../components/PostHead';
 import PostForm from '../components/PostForm';
-import styles from '../styles/styles.module.scss';
+import { Grid, Box, Typography, CircularProgress } from '@mui/material';
 
 const Home = () => {
     const { posts, dispatch } = usePostsContext();
@@ -27,32 +26,52 @@ const Home = () => {
 
     if (!posts) {
         return (
-            <div className="spinner">
-                <HashLoader
-                    color="#36d7b7"
-                    size={200}
-                />
-            </div>
+            <Box
+                sx={{
+                    width: '200px',
+                    height: '200px',
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <CircularProgress size={100} />
+            </Box>
         );
     }
 
     return (
         <>
-            <div>
-                <h1> Posts </h1>
+            <Box sx={{ textAlign: 'center', marginTop: '20px' }}>
+                <Typography variant="h4" sx={{ marginBottom: '20px' }}>
+                    Posts
+                </Typography>
+            </Box>
 
-                <div className={styles.postContainer}>
-                    {posts && posts.map(post => (
-                        <div key={post._id} className={styles.postCard}>
+            <Grid container spacing={4} sx={{ marginTop: '20px' }}>
+                {posts && posts.map(post => (
+                    <Grid item xs={12} sm={6} md={4} key={post._id}>
+                        <Box
+                            sx={{
+                                padding: 2,
+                                boxShadow: 3,
+                                borderRadius: 2,
+                                backgroundColor: '#fff',
+                            }}
+                        >
                             <PostHead post={post} />
-                        </div>
-                    ))}
-                </div>
-            </div>
+                        </Box>
+                    </Grid>
+                ))}
+            </Grid>
 
-            <div>
+            <Box sx={{ marginTop: '20px' }}>
                 <PostForm />
-            </div>
+            </Box>
         </>
     );
 };

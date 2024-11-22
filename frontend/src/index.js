@@ -5,7 +5,8 @@ import App from './App';
 import { PostsContextProvider } from './context/PostsContext';
 import { AuthContextProvider } from './context/AuthContext';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';  // Import ThemeProvider, createTheme, CssBaseline
-import './styles/index.scss';
+//import './styles/index.scss';
+
 
 // Create a Material UI theme
 const theme = createTheme();
