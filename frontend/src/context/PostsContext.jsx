@@ -13,12 +13,14 @@ export const postsReducer = (state, action) => {
             return {
                 posts: [action.payload, ...state.posts]
             };
+        case 'CREATE_POST_WITH_PASSWORD':
+            return {
+                posts: [action.payload, ...state.posts]
+            };
         case 'DELETE_POST':
             return {
                 ...state,
-                posts: state.posts.filter(post => post._id !== action.payload)//._id) 
-                //removed that aspect because only post ID was being passed earlier 
-                //frontend would not reflect the change immediately
+                posts: state.posts.filter(post => post._id !== action.payload)
             };
         default:
             return state;
@@ -31,8 +33,8 @@ export const PostsContextProvider = ({ children }) => {
     });
 
     return (
-        <PostsContext.Provider value={ { ...state, dispatch }}>
-            { children }
+        <PostsContext.Provider value={{ ...state, dispatch }}>
+            {children}
         </PostsContext.Provider>
     );
 };

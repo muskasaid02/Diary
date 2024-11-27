@@ -12,7 +12,8 @@ const PostForm = () => {
         const post = {
             date: data.date,
             title: data.title,
-            content: data.content
+            content: data.content,
+            password: data.password || null,
         };
 
         try {
@@ -28,10 +29,12 @@ const PostForm = () => {
             const body = await response.text();
             const newPost = JSON.parse(body);
 
-            if (!response.ok) setError('something went wrong', { type: 400 });
+            if (!response.ok) {
+                setError('something went wrong', { type: 400 });
+            }
 
             if (response.ok) {
-                reset({ title: '', date: '', content: '' });
+                reset({ title: '', date: '', content: '', password: '' });
                 dispatch({ type: 'CREATE_POST', payload: newPost });
                 console.log('new post created', newPost);
             }
@@ -88,6 +91,15 @@ const PostForm = () => {
                     {...register("content", { required: 'Content is required' })}
                     error={!!errors.content}
                     helperText={errors.content?.message}
+                />
+                
+                <TextField
+                    label="Password (Optional)"
+                    type="password"
+                    variant="outlined"
+                    fullWidth
+                    {...register("password")}
+                    helperText="Add a password to protect your post (optional)"
                 />
                 
                 <Button type="submit" variant="contained" color="primary" fullWidth>
