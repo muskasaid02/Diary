@@ -19,8 +19,8 @@ const Login = () => {
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
                 backgroundAttachment: 'fixed',
-                width: '95vw',       
-                height: '80vh',      
+                width: '95vw',
+                height: '80vh',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -32,7 +32,7 @@ const Login = () => {
                         <Typography variant="h5" component="h3" gutterBottom>
                             Log In
                         </Typography>
-                        
+
                         <TextField
                             fullWidth
                             label="Email"

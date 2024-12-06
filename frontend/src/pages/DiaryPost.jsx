@@ -53,7 +53,7 @@ const DiaryPost = () => {
 
     const handlePasswordSubmit = (e) => {
         e.preventDefault();
-        setPasswordRequired(false); 
+        setPasswordRequired(false);
     };
 
     return (

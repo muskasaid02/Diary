@@ -1,16 +1,22 @@
+import React, { useContext } from 'react';
 import { useRoutes, Navigate } from 'react-router-dom';
 import { useAuthContext } from './hooks/useAuthContext';
+import { ThemeContext } from './context/ThemeContext';  // Import ThemeContext
 import Layout from './pages/Layout';
 import Home from './pages/Home';
 import DiaryPost from './pages/DiaryPost';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 
+
 const App = () => {
     const { user } = useAuthContext();
+    const { theme, muiTheme } = useContext(ThemeContext); // Access the theme context here
+
 
     const elements = useRoutes([
-        { path: '/', 
+        {
+            path: '/',
             element: <Layout />,
             children: [
                 { path: '/', element: user ? <Home /> : <Navigate to="/api/login" /> },
@@ -21,7 +27,12 @@ const App = () => {
         }
     ]);
 
+
     return elements;
 };
 
+
 export default App;
+
+
+
