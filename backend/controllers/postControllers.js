@@ -86,3 +86,22 @@ export const updatePost = async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 };
+
+export const createPostWithImage = async (req, res) => {
+    const { date, title, content, password } = req.body;
+    const user_id = req.user._id;
+    const image = req.file ? req.file.location : null;
+
+    try {
+        let hashedPassword = null;
+        if (password) {
+            const salt = await bcrypt.genSalt(10);
+            hashedPassword = await bcrypt.hash(password, salt);
+        }
+
+        const post = await Post.create({ date, title, content, user_id, image, password: hashedPassword });
+        res.status(200).json(post);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};

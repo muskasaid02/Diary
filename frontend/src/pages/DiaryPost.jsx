@@ -76,13 +76,16 @@ const DiaryPost = () => {
                 <>
                     {error && <p className={styles.error}>{error}</p>}
                     {post && (
-                        <>
-                            <h2>{post.title}</h2>
-                            <div>{format(new Date(post.date), 'MMMM d, y')}</div>
-                            <p>{post.content}</p>
-                        </>
+                            <>
+                                <h2>{post.title}</h2>
+                                <div>{format(new Date(post.date), 'MMMM d, y')}</div>
+                                {post.image && <img src={post.image} alt={post.title} className={styles.image} />}
+                                <p>{post.content}</p>
+                             </>
                     )}
+                    
                 </>
+                
             )}
         </div>
     );

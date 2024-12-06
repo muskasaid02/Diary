@@ -15,7 +15,7 @@ const PostForm = () => {
             content: data.content,
             password: data.password || null,
         };
-
+    
         try {
             const response = await fetch('https://diary-backend-utp0.onrender.com/api/posts', {
                 method: 'POST',
@@ -25,14 +25,14 @@ const PostForm = () => {
                     'Authorization': `Bearer ${user.token}`
                 }
             });
-
+    
             const body = await response.text();
             const newPost = JSON.parse(body);
-
+    
             if (!response.ok) {
                 setError('something went wrong', { type: 400 });
             }
-
+    
             if (response.ok) {
                 reset({ title: '', date: '', content: '', password: '' });
                 dispatch({ type: 'CREATE_POST', payload: newPost });
@@ -101,7 +101,19 @@ const PostForm = () => {
                     {...register("password")}
                     helperText="Add a password to protect your post (optional)"
                 />
-                
+
+                <TextField
+                    type="file"
+                    variant="outlined"
+                    fullWidth
+                    InputProps={{
+                    inputProps: {
+                    accept: 'image/*'
+                    }
+                    }}
+                    {...register("image")}
+                />
+    
                 <Button type="submit" variant="contained" color="primary" fullWidth>
                     POST
                 </Button>

@@ -7,6 +7,7 @@ import {
     deletePost,
     updatePost
 } from '../controllers/postControllers.js';
+import upload from '../middleware/upload.js';
 
 const router = express.Router();
 router.use(requireAuth);
@@ -25,8 +26,16 @@ router.post('/', async (req, res, next) => {
     next();
 }, createPost);
 
+router.post('/with-image', upload.single('image'), async (req, res, next) => {
+    const { password } = req.body;
+    req.password = password;
+    next();
+}, createPostWithImage);
+
+
 router.delete('/:id', deletePost);
 
 router.patch('/:id', updatePost);
 
 export default router;
+
