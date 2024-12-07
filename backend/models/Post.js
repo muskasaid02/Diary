@@ -22,6 +22,13 @@ const PostSchema = new Schema({
         ref: 'User'
     },
 
+    mood: {
+        type: String,
+        required: false, // Optional
+        enum: ['happy', 'sad', 'excited', 'anxious', 'neutral'], // Define allowed moods
+        default: 'neutral'
+    },
+
     password: {
         type: String,
         required: false
