@@ -49,13 +49,15 @@ const Home = () => {
     }
 
     return (
-        <Box sx={{ position: 'relative' }}>
+        <Box sx={{ 
+            display: 'flex',
+            padding: '24px',
+            gap: '24px'
+        }}>
+            {/* Posts Section */}
             <Box sx={{ 
-                position: 'absolute',
-                right: '24px',
-                left: '5px',
-                top: '20px',
-                width: '95%'
+                flex: 2,
+                minWidth: 0
             }}>
                 <Typography variant="h4" component="h1" sx={{ mb: 3 }}>
                     Posts
@@ -77,12 +79,12 @@ const Home = () => {
                     ))}
                 </Box>
             </Box>
-
+    
+            {/* Form Section */}
             <Box sx={{ 
-                position: 'absolute',
-                left: '24px',
-                top: '24px',
-                width: '350%'
+                flex: 1,
+                minWidth: '300px',
+                maxWidth: '400px'
             }}>
                 <PostForm />
             </Box>

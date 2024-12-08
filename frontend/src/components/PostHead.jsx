@@ -66,7 +66,10 @@ const PostHead = ({ post }) => {
         </Typography>
         
         <IconButton 
-          onClick={handleClick}
+          onClick={(e)=> {
+            e.stopPropagation();
+            handleClick();
+          }}
           sx={{
             color: '#d32f2f',
             '&:hover': {
