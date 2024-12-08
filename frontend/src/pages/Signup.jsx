@@ -1,3 +1,4 @@
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useSignup } from "../hooks/useSignup.js";
 import {
@@ -8,10 +9,14 @@ import {
     Button,
     Paper,
 } from '@mui/material';
+import { ThemeContext } from "../context/ThemeContext"; // Import ThemeContext
+import useStyles from "../styles/makeStyles"; // Import custom styles
 
 const Signup = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const { signup, loading, error } = useSignup();
+    const { theme } = useContext(ThemeContext); // Access theme from context
+    const classes = useStyles(); // Use styles from makeStyles
 
     const onSubmit = async data => {
         await signup(data.email, data.password);
@@ -21,7 +26,6 @@ const Signup = () => {
     return (
         <Box
             sx={{
-                //backgroundImage: `url(${process.env.PUBLIC_URL}/background.jpg)`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
@@ -34,8 +38,17 @@ const Signup = () => {
             }}
         >
             <Container maxWidth="xs">
-                <Paper elevation={3} sx={{ padding: 4, textAlign: 'center' }}>
-                    <Typography variant="h5" gutterBottom>
+                <Paper
+                    elevation={3}
+                    className={`${classes.paper} ${theme === "dark" ? classes.paperDark : classes.paperLight
+                        }`}
+                >
+                    <Typography
+                        variant="h5"
+                        gutterBottom
+                        className={`${classes.heading} ${theme === "dark" ? classes.headingDark : ""
+                            }`}
+                    >
                         Sign Up
                     </Typography>
                     <form onSubmit={handleSubmit(onSubmit)}>
@@ -80,6 +93,3 @@ const Signup = () => {
 };
 
 export default Signup;
-
-
-
