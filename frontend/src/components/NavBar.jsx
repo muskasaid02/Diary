@@ -15,34 +15,39 @@ const NavBar = () => {
     const handleClick = () => logout();
 
     return (
-        <AppBar position="static" sx={{ backgroundColor: '#1976d2', paddingY: 1 }}>
+        <AppBar position="static" sx={{ backgroundColor: '#1976d2', mb: 3 }}>
             <Container maxWidth="lg">
-                <Toolbar sx={{ minHeight: '20% !important', display: 'flex', justifyContent: 'space-between' }}>
-                    
-                    {/* Left-aligned Home link with translateX to adjust horizontal position */}
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-start', transform: 'translateX(-270%)translateY(-20%)' }}>
-                        <Typography variant="h6" component="div">
-                            <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
-                                Home
-                            </Link>
-                        </Typography>
-                    </Box>
+                <Toolbar sx={{ 
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    minHeight: '48px !important',  // Reduced height
+                    px: 2  // Add some horizontal padding
+                }}>
+                    {/* Left: Home link */}
+                    <Typography variant="h6" component="div">
+                        <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
+                            Home
+                        </Link>
+                    </Typography>
 
-                    {/* Centered Title with optional translateY to move it vertically */}
-                    <Box sx={{ display: 'flex', justifyContent: 'center', transform: 'translateY(-20%)' }}>
-                        <Typography variant="h6" component="div">
-                            The Diary App
-                        </Typography>
-                    </Box>
+                    {/* Center: App Title */}
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 0 }}>
+                        The Diary App
+                    </Typography>
 
-                    {/* Right-aligned Login/Signup or Logout with translateX to adjust position */}
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', transform: 'translateX(130%)translateY(-20%)' }}>
+                    {/* Right: Auth Buttons */}
+                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                         {user ? (
                             <>
-                                <Typography variant="body1" sx={{ marginRight: 2 }}>
+                                <Typography variant="body1">
                                     {user.email}
                                 </Typography>
-                                <Button color="inherit" onClick={handleClick}>
+                                <Button 
+                                    color="inherit" 
+                                    onClick={handleClick}
+                                    sx={{ ml: 2 }}
+                                >
                                     Logout
                                 </Button>
                             </>
