@@ -78,6 +78,22 @@ const PostForm = () => {
                     label="Title"
                     variant="outlined"
                     fullWidth
+                    InputLabelProps={{
+                        style: {
+                            color: theme === 'dark' ? '#1E88E5' : 'black', // Blue in dark mode
+                            transition: 'color 0.3s ease',
+                        },
+                    }}
+                    inputProps={{
+                        style: {
+                            color: theme === 'dark' ? '#1E88E5' : 'black', // Blue text
+                        },
+                    }}
+                    FormHelperTextProps={{
+                        style: {
+                            color: theme === 'dark' ? '#1E88E5' : 'black', // Blue helper text
+                        },
+                    }}
                     {...register("title", { required: 'Title is required' })}
                     error={!!errors.title}
                     helperText={errors.title?.message}
@@ -88,7 +104,22 @@ const PostForm = () => {
                     type="date"
                     variant="outlined"
                     fullWidth
-                    InputLabelProps={{ shrink: true }}
+                    InputLabelProps={{
+                        style: {
+                            color: theme === 'dark' ? '#1E88E5' : 'black', // Blue in dark mode
+                        },
+                        shrink: true,
+                    }}
+                    inputProps={{
+                        style: {
+                            color: theme === 'dark' ? '#1E88E5' : 'black', // Blue text
+                        },
+                    }}
+                    FormHelperTextProps={{
+                        style: {
+                            color: theme === 'dark' ? '#1E88E5' : 'black', // Blue helper text
+                        },
+                    }}
                     {...register("date", { required: 'Date is required' })}
                     error={!!errors.date}
                     helperText={errors.date?.message}
@@ -100,6 +131,16 @@ const PostForm = () => {
                     fullWidth
                     multiline
                     rows={8}
+                    InputLabelProps={{
+                        style: {
+                            color: theme === 'dark' ? '#1E88E5' : 'black', // Blue in dark mode
+                        },
+                    }}
+                    inputProps={{
+                        style: {
+                            color: theme === 'dark' ? '#1E88E5' : 'black', // Blue text
+                        },
+                    }}
                     {...register("content", { required: 'Content is required' })}
                     error={!!errors.content}
                     helperText={errors.content?.message}
@@ -113,6 +154,21 @@ const PostForm = () => {
                     type="password"
                     variant="outlined"
                     fullWidth
+                    InputLabelProps={{
+                        style: {
+                            color: theme === 'dark' ? '#1E88E5' : 'black', // Blue in dark mode
+                        },
+                    }}
+                    inputProps={{
+                        style: {
+                            color: theme === 'dark' ? '#1E88E5' : 'black', // Blue text
+                        },
+                    }}
+                    FormHelperTextProps={{
+                        style: {
+                            color: theme === 'dark' ? '#1E88E5' : 'black', // Blue helper text
+                        },
+                    }}
                     {...register("password")}
                     helperText="Add a password to protect your post (optional)"
                 />
