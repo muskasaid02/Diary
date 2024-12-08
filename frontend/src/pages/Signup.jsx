@@ -21,7 +21,6 @@ const Signup = () => {
     return (
         <Box
             sx={{
-                //backgroundImage: `url(${process.env.PUBLIC_URL}/background.jpg)`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
