@@ -5,8 +5,7 @@ import { useAuthContext } from '../hooks/useAuthContext';
 import { 
   ListItem, 
   Typography, 
-  IconButton, 
-  Box, 
+  IconButton,  
   Stack 
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
