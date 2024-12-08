@@ -59,6 +59,7 @@ const PostForm = () => {
                     boxShadow: theme === 'dark' ? 3 : '0px 0px 8px rgba(0, 0, 0, 0.2)', // Outline
                     borderRadius: 2,
                     backgroundColor: theme === 'dark' ? '#555' : 'white',
+                    transition: 'background-color 0.3s ease, box-shadow 0.3s ease', // Add smooth transition
                 }}
             >
                 <Typography
@@ -67,6 +68,7 @@ const PostForm = () => {
                     gutterBottom
                     sx={{
                         color: theme === 'dark' ? 'white' : 'black',
+                        transition: 'color 0.3s ease', // Add smooth transition for text color
                     }}
                 >
                     Create a post
