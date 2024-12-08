@@ -16,7 +16,7 @@ const DiaryPost = () => {
 
   useEffect(() => {
     const fetchPost = async () => {
-      const response = await fetch(`https://diary-backend-utp0.onrender.com/${id}`, {
+      const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${id}`, {
         headers: {
           'Authorization': `Bearer ${user.token}`
         }
@@ -34,7 +34,7 @@ const DiaryPost = () => {
       sx={{
         display: 'flex',
         justifyContent: 'center',
-        padding: '2rem 0'
+        padding: '1rem 1'
       }}
     >
       <Card 
