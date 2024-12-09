@@ -39,3 +39,4 @@ connectDB().then(() => {
     app.listen(port, () => console.log(`listening on port ${port}`));
 }).catch(err => console.log(err));
 
+export { app };
