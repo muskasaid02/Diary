@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../../src/context/AuthContext';
 import Layout from '../../src/pages/Layout';
 
 describe('Layout', () => {

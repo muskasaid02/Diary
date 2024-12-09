@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../../src/context/AuthContext';
 import DiaryPost from '../../src/pages/DiaryPost';
 
 jest.mock('react-router-dom', () => ({

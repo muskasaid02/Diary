@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
-import { PostsContext } from '../../context/PostsContext';
+import { AuthContext } from '../../src/context/AuthContext';
+import { PostsContext } from '../../src/context/PostsContext';
 import Home from '../../src/pages/Home';
 
 describe('Home', () => {

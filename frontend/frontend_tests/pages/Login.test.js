@@ -1,10 +1,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../../src/context/AuthContext';
 import Login from '../../src/pages/Login';
 
 // Mock the useLogin hook
-jest.mock('../../hooks/useLogin', () => ({
+jest.mock('../../src/hooks/useLogin', () => ({
     useLogin: () => ({
         login: jest.fn(),
         error: null,

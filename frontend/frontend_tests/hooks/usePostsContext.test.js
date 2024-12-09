@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { PostsContext } from '../../context/PostsContext';
+import { PostsContext } from '../../src/context/PostsContext';
 import { usePostsContext } from '../../src/hooks/usePostsContext';
 
 describe('usePostsContext', () => {

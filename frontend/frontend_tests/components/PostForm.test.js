@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { PostsContext } from '../../context/PostsContext';
-import { AuthContext } from '../../context/AuthContext';
+import { PostsContext } from '../../src/context/PostsContext';
+import { AuthContext } from '../../src/context/AuthContext';
 import PostForm from '../../src/components/PostForm';
 
 const mockDispatch = jest.fn();

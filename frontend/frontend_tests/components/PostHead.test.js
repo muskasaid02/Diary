@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { PostsContext } from '../../context/PostsContext';
-import { AuthContext } from '../../context/AuthContext';
+import { PostsContext } from '../../src/context/PostsContext';
+import { AuthContext } from '../../src/context/AuthContext';
 import PostHead from '../../src/components/PostHead';
 
 const mockPost = {
