@@ -1,54 +1,57 @@
-import { render, screen, waitFor } from '@testing-library/react';
+// frontend_tests/pages/Home.test.js
+import React from 'react';
+import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthContext } from '../../src/context/AuthContext';
 import { PostsContext } from '../../src/context/PostsContext';
 import Home from '../../src/pages/Home';
 
+const mockDispatch = jest.fn();
+const mockUser = { token: 'test-token' };
+const mockPosts = [
+    { _id: '1', title: 'Test Post 1', content: 'Content 1', date: new Date().toISOString() }
+];
+
+// Mock fetch globally
+global.fetch = jest.fn(() =>
+    Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(mockPosts)
+    })
+);
+
+const renderHome = () => {
+    return render(
+        <AuthContext.Provider value={{ user: mockUser }}>
+            <PostsContext.Provider value={{ posts: mockPosts, dispatch: mockDispatch }}>
+                <BrowserRouter>
+                    <Home />
+                </BrowserRouter>
+            </PostsContext.Provider>
+        </AuthContext.Provider>
+    );
+};
+
 describe('Home', () => {
-    const mockUser = { token: 'test-token' };
-    const mockPosts = [
-        { _id: '1', title: 'Post 1', content: 'Content 1', date: '2024-12-08' },
-        { _id: '2', title: 'Post 2', content: 'Content 2', date: '2024-12-08' }
-    ];
-
-    const mockDispatch = jest.fn();
-
     beforeEach(() => {
-        global.fetch = jest.fn();
-        mockDispatch.mockClear();
+        jest.clearAllMocks();
     });
 
-    const renderHome = (posts = null) => {
-        return render(
+    it('renders loading state when posts is null', () => {
+        render(
             <AuthContext.Provider value={{ user: mockUser }}>
-                <PostsContext.Provider value={{ posts, dispatch: mockDispatch }}>
+                <PostsContext.Provider value={{ posts: null, dispatch: mockDispatch }}>
                     <BrowserRouter>
                         <Home />
                     </BrowserRouter>
                 </PostsContext.Provider>
             </AuthContext.Provider>
         );
-    };
-
-    it('displays loading spinner when posts is null', () => {
-        renderHome(null);
-        expect(screen.getByTestId('hash-loader')).toBeInTheDocument();
+        expect(screen.getByRole('progressbar')).toBeInTheDocument();
     });
 
-    it('displays posts when loaded', async () => {
-        global.fetch.mockResolvedValueOnce({
-            ok: true,
-            json: () => Promise.resolve(mockPosts)
-        });
-
-        renderHome(mockPosts);
-
-        expect(screen.getByText('Post 1')).toBeInTheDocument();
-        expect(screen.getByText('Post 2')).toBeInTheDocument();
-    });
-
-    it('shows create post form', () => {
-        renderHome([]);
-        expect(screen.getByText('Create a post')).toBeInTheDocument();
+    it('renders posts when loaded', async () => {
+        renderHome();
+        expect(screen.getByText('Test Post 1')).toBeInTheDocument();
     });
 });

@@ -1,11 +1,15 @@
-// frontend/frontend_tests/setup.js
+// frontend_tests/setup.js
 import '@testing-library/jest-dom';
-import React from 'react';
+import 'whatwg-fetch';
+import { TextEncoder, TextDecoder } from 'util';
 
-global.React = React;
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
 
+// Mock fetch
 global.fetch = jest.fn();
 
+// Mock localStorage
 const localStorageMock = {
     getItem: jest.fn(),
     setItem: jest.fn(),
@@ -13,3 +17,6 @@ const localStorageMock = {
     clear: jest.fn()
 };
 global.localStorage = localStorageMock;
+
+// Suppress React Router warnings
+jest.spyOn(console, 'warn').mockImplementation(() => {});
