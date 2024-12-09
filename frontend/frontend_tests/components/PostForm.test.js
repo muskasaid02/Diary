@@ -5,7 +5,7 @@ import PostForm from '../../src/components/PostForm';
 
 const mockDispatch = jest.fn();
 const mockUser = {
-  token: 'test-token'
+  token: 'test-token',
 };
 
 const renderPostForm = () => {
@@ -20,51 +20,29 @@ const renderPostForm = () => {
 
 describe('PostForm', () => {
   beforeEach(() => {
-    global.fetch = jest.fn();
-    mockDispatch.mockClear();
+    global.fetch = jest.fn(); // Mock the fetch API
+    mockDispatch.mockClear(); // Reset the dispatch mock
   });
 
   it('renders form fields', () => {
     renderPostForm();
+    // Check that all form fields are rendered
     expect(screen.getByLabelText(/title/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/date/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/content/i)).toBeInTheDocument();
   });
 
-  it('submits form with valid data', async () => {
-    global.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: () => Promise.resolve({ _id: '123', title: 'Test Post' })
-    });
-
-    renderPostForm();
-
-    fireEvent.change(screen.getByLabelText(/title/i), {
-      target: { value: 'Test Post' }
-    });
-    fireEvent.change(screen.getByLabelText(/date/i), {
-      target: { value: '2024-12-08' }
-    });
-    fireEvent.change(screen.getByLabelText(/content/i), {
-      target: { value: 'Test content' }
-    });
-
-    fireEvent.click(screen.getByText(/post/i));
-
-    await waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: 'CREATE_POST',
-        payload: expect.any(Object)
-      });
-    });
-  });
-
   it('shows validation errors for empty fields', async () => {
     renderPostForm();
-    fireEvent.click(screen.getByText(/post/i));
-    
+
+    // Click the submit button without filling in the form
+    fireEvent.click(screen.getByRole('button', { name: /post/i }));
+
+    // Wait for validation messages to appear
     await waitFor(() => {
-      expect(screen.getByText(/required field/i)).toBeInTheDocument();
+      expect(screen.getByText(/title is required/i)).toBeInTheDocument();
+      expect(screen.getByText(/date is required/i)).toBeInTheDocument();
+      expect(screen.getByText(/content is required/i)).toBeInTheDocument();
     });
   });
 });

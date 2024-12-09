@@ -4,10 +4,10 @@ import { AuthContext } from '../../src/context/AuthContext';
 import NavBar from '../../src/components/NavBar';
 
 // Mock useLogout hook
-jest.mock('../../hooks/useLogout', () => ({
+jest.mock('../../src/hooks/useLogout', () => ({
   useLogout: () => ({
-    logout: jest.fn()
-  })
+    logout: jest.fn(),
+  }),
 }));
 
 const renderNavBar = (user = null) => {

@@ -3,11 +3,11 @@ import { useContext } from 'react';
 import { AuthContext, AuthContextProvider } from '../../src/context/AuthContext';
 
 describe('AuthContext', () => {
-    let testComponent;
+    let TestComponent; // Use PascalCase for React component naming
     let renderedContext;
 
     beforeEach(() => {
-        testComponent = function TestComponent() {
+        TestComponent = function TestComponent() {
             renderedContext = useContext(AuthContext);
             return null;
         };
@@ -16,10 +16,11 @@ describe('AuthContext', () => {
     it('provides initial auth state', () => {
         render(
             <AuthContextProvider>
-                <testComponent />
+                <TestComponent />
             </AuthContextProvider>
         );
 
+        // Check initial state provided by AuthContextProvider
         expect(renderedContext.user).toBe(null);
         expect(typeof renderedContext.dispatch).toBe('function');
     });
@@ -27,17 +28,19 @@ describe('AuthContext', () => {
     it('updates auth state on login action', () => {
         render(
             <AuthContextProvider>
-                <testComponent />
+                <TestComponent />
             </AuthContextProvider>
         );
 
         act(() => {
+            // Dispatch a LOGIN action
             renderedContext.dispatch({
                 type: 'LOGIN',
                 payload: { email: 'test@example.com', token: 'test-token' }
             });
         });
 
+        // Check updated state after LOGIN action
         expect(renderedContext.user).toEqual({
             email: 'test@example.com',
             token: 'test-token'
@@ -47,14 +50,16 @@ describe('AuthContext', () => {
     it('clears auth state on logout action', () => {
         render(
             <AuthContextProvider>
-                <testComponent />
+                <TestComponent />
             </AuthContextProvider>
         );
 
         act(() => {
+            // Dispatch a LOGOUT action
             renderedContext.dispatch({ type: 'LOGOUT' });
         });
 
+        // Check state after LOGOUT action
         expect(renderedContext.user).toBe(null);
     });
 });

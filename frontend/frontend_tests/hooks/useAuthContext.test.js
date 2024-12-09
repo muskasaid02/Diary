@@ -17,8 +17,8 @@ describe('useAuthContext', () => {
     });
 
     it('throws error when used outside AuthContext', () => {
-        const { result } = renderHook(() => useAuthContext());
-        
-        expect(result.error).toBeTruthy();
+        expect(() => renderHook(() => useAuthContext())).toThrow(
+            'useAuthContext must be used inside an AuthContextProvider'
+        );
     });
 });

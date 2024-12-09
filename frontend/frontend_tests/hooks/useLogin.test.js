@@ -35,10 +35,13 @@ describe('useLogin', () => {
 
         expect(mockDispatch).toHaveBeenCalledWith({
             type: 'LOGIN',
-            payload: expect.any(Object)
+            payload: {
+                email: 'test@example.com',
+                token: 'test-token',
+            },
         });
         expect(result.current.error).toBe(null);
-        expect(result.current.isLoading).toBe(false);
+        expect(result.current.loading).toBe(false); // Correctly reference "loading"
     });
 
     it('handles login failure', async () => {
@@ -56,6 +59,6 @@ describe('useLogin', () => {
 
         expect(mockDispatch).not.toHaveBeenCalled();
         expect(result.current.error).toBe('Invalid credentials');
-        expect(result.current.isLoading).toBe(false);
+        expect(result.current.loading).toBe(false); // Correctly reference "loading"
     });
 });

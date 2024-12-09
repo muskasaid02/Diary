@@ -20,8 +20,8 @@ describe('usePostsContext', () => {
     });
 
     it('throws error when used outside PostsContext', () => {
-        const { result } = renderHook(() => usePostsContext());
-        
-        expect(result.error).toBeTruthy();
+        expect(() => {
+            renderHook(() => usePostsContext());
+        }).toThrow('usePostsContext must be used inside a PostsContext Provder');
     });
 });
