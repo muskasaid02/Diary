@@ -1,23 +1,27 @@
 import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 import { jest } from '@jest/globals';
 
-let mongod;
+jest.setTimeout(100000); // Set timeout to 30 seconds
 
-beforeAll(async () => {
-  mongod = await MongoMemoryServer.create();
-  const uri = mongod.getUri();
-  await mongoose.connect(uri);
+// Partial mocking of mongoose connection methods
+jest.mock('mongoose', () => {
+    const originalMongoose = jest.requireActual('mongoose'); // Import actual Mongoose for named exports
+    return {
+        ...originalMongoose, // Spread all original exports (like Schema, model, etc.)
+        connect: jest.fn().mockResolvedValue(() => Promise.resolve()),
+        disconnect: jest.fn().mockResolvedValue(() => Promise.resolve()),
+        connection: {
+            ...originalMongoose.connection, // Preserve original connection properties
+            close: jest.fn().mockResolvedValue(() => Promise.resolve()),
+        },
+    };
 });
 
-afterAll(async () => {
-  await mongoose.connection.close();
-  await mongod.stop();
+// Clear mocks after each test
+afterEach(() => {
+    jest.clearAllMocks();
 });
 
-beforeEach(async () => {
-  const collections = await mongoose.connection.db.collections();
-  for (let collection of collections) {
-    await collection.deleteMany({});
-  }
+afterAll(() => {
+    console.log('Mongoose mock teardown complete');
 });

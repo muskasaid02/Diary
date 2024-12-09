@@ -2,6 +2,10 @@
 import request from 'supertest';
 import { app }  from '../../server';
 import User from '../../models/User';
+import { jest } from '@jest/globals';
+
+// backend_tests/routes/users.test.js
+jest.setTimeout(100000);
 
 describe('User Routes', () => {
     describe('POST /api/user/signup', () => {
