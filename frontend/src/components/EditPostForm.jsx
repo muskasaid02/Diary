@@ -20,6 +20,7 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log('Submitting update:', { title, content, date });  // Debug log
 
         const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${post._id}`, {
             method: 'PATCH',
@@ -31,8 +32,10 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
         });
 
         const json = await response.json();
+        console.log('Server response:', json);  // Debug log
 
         if (response.ok) {
+            console.log('Dispatching UPDATE_POST with:', json);  // Debug log
             dispatch({ type: 'UPDATE_POST', payload: json });
             onClose();
             console.log({type: 'Post Updated: ', payload: json});

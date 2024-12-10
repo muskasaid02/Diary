@@ -18,15 +18,19 @@ export const postsReducer = (state, action) => {
                 ...state,
                 posts: state.posts.filter(post => post._id !== action.payload)
             };
-        case 'UPDATE_POST':
-            return {
-                ...state,
-                posts: state.posts.map(post => 
-                    post._id === action.payload._id ? {...post, ...action.payload } : post
-                )
-            };
+            case 'UPDATE_POST':
+                console.log('Current posts:', state.posts);  // Debug log
+                console.log('Update payload:', action.payload);  // Debug log
+                const newState = {
+                    ...state,
+                    posts: state.posts.map(post => 
+                        post._id === action.payload._id ? action.payload : post
+                    )
+                };
+                console.log('New posts state:', newState.posts);  // Debug log
+                return newState;
         default:
-            return state;
+            //return state;
     }
 };
 
