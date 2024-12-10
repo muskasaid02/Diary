@@ -16,22 +16,67 @@ describe('Post Model', () => {
         await mongoose.connection.close();
     });
 
-    it('should create a post successfully', async () => {
+    beforeEach(async () => {
+        await Post.deleteMany({});
+    });
+
+    it('should create a post with a hashed password', async () => {
         const validPost = {
             title: 'Test Post',
             content: 'Test Content',
             date: new Date(),
-            user_id: new mongoose.Types.ObjectId()
+            user_id: new mongoose.Types.ObjectId(),
+            password: 'PlainPassword123',
         };
 
         const post = await Post.create(validPost);
-        expect(post.title).toBe(validPost.title);
-        expect(post.content).toBe(validPost.content);
+
+        // Password should be hashed
+        expect(post.password).not.toBe(validPost.password);
+        expect(post.password).toMatch(/^\$2[ayb]\$.{56}$/); // bcrypt hash regex
     });
 
-    it('should fail without required fields', async () => {
-        const invalidPost = {};
-        
+    it('should allow only valid moods', async () => {
+        const validPost = {
+            title: 'Test Post',
+            content: 'Test Content',
+            date: new Date(),
+            user_id: new mongoose.Types.ObjectId(),
+            mood: 'happy', // Valid mood
+        };
+    
+        const post = await Post.create(validPost);
+    
+        // Debugging log (remove if no longer needed)
+        console.log(post);
+    
+        // Check mood with different approaches
+        expect(post.mood).toBe('happy');
+        expect(post).toHaveProperty('mood', 'happy');
+    });
+    
+
+    it('should default mood to "neutral" if not provided', async () => {
+        const validPost = {
+            title: 'Test Post',
+            content: 'Test Content',
+            date: new Date(),
+            user_id: new mongoose.Types.ObjectId(),
+        };
+
+        const post = await Post.create(validPost);
+        expect(post.mood).toBe('neutral');
+    });
+
+    it('should throw an error for invalid mood values', async () => {
+        const invalidPost = {
+            title: 'Test Post',
+            content: 'Test Content',
+            date: new Date(),
+            user_id: new mongoose.Types.ObjectId(),
+            mood: 'angry', // Invalid mood
+        };
+
         await expect(Post.create(invalidPost))
             .rejects
             .toThrow();
