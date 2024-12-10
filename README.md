@@ -1,3 +1,8 @@
+## Project technical Specs: 
+   https://docs.google.com/document/d/1hblgpiqBCv_8QBhN40i-QsK55JKoHcS10-u8e_BgmWw/edit?usp=sharing
+## UI Mockup: 
+   https://www.figma.com/proto/G5pfmmwnsWNGZqJeakznSS/308-Journal?node-id=13-1846&starting-point-node-id=13%3A1846
+
 ## Code Style Guidelines
 This project uses **Prettier** and **ESLint** to enforce code style and best practices. All contributors should follow the guidelines below:
 ### Style Guide
