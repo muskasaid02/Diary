@@ -1,8 +1,21 @@
-// backend_tests/models/Post.test.js
 import mongoose from 'mongoose';
 import Post from '../../models/Post';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 describe('Post Model', () => {
+    beforeAll(async () => {
+        await mongoose.connect(process.env.MONGO_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+    });
+
+    afterAll(async () => {
+        await mongoose.connection.close();
+    });
+
     it('should create a post successfully', async () => {
         const validPost = {
             title: 'Test Post',
