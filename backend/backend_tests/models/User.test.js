@@ -9,8 +9,8 @@ describe('User Model', () => {
     beforeAll(async () => {
         // Connect to the database
         await mongoose.connect(process.env.MONGO_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
+            //useNewUrlParser: true,
+            //useUnifiedTopology: true,
         });
     });
 
@@ -55,4 +55,52 @@ describe('User Model', () => {
                 .toThrow('incorrect password');
         });
     });
+
+    describe('User.signup static method', () => {
+        it('should not create user without email', async () => {
+            await expect(User.signup('', 'Test123!'))
+                .rejects
+                .toThrow('all fields required');
+        });
+    
+        it('should not create user without password', async () => {
+            await expect(User.signup('test@test.com', ''))
+                .rejects
+                .toThrow('all fields required');
+        });
+    
+        it('should not create user with weak password', async () => {
+            await expect(User.signup('test@test.com', '12345'))
+                .rejects
+                .toThrow('password not strong');
+        });
+    
+        it('should not create user with an already registered email', async () => {
+            await User.signup('test@test.com', 'Test123!');
+            await expect(User.signup('test@test.com', 'Test123!'))
+                .rejects
+                .toThrow('email already registered');
+        });
+    });
+    
+    describe('User.login static method', () => {
+        it('should not login without email', async () => {
+            await expect(User.login('', 'Test123!'))
+                .rejects
+                .toThrow('all fields required');
+        });
+    
+        it('should not login without password', async () => {
+            await expect(User.login('test@test.com', ''))
+                .rejects
+                .toThrow('all fields required');
+        });
+    
+        it('should not login with unregistered email', async () => {
+            await expect(User.login('notregistered@test.com', 'Test123!'))
+                .rejects
+                .toThrow('email not registered');
+        });
+    });
+    
 });
