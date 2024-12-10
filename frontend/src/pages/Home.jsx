@@ -39,7 +39,7 @@ const Home = () => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    backgroundColor: theme === 'dark' ? '#1c1c1c' : '#fff', // Set background color based on theme
+                    backgroundColor: theme === 'dark' ? '#1c1c1c' : '#fff',
                 }}
             >
                 <CircularProgress size={100} />
@@ -50,11 +50,16 @@ const Home = () => {
     return (
         <Box
             sx={{
-                backgroundColor: theme === 'dark' ? '#1c1c1c' : '#fff',
-                color: theme === 'dark' ? '#fff' : '#000',
-                minHeight: '100vh',
-                padding: '20px',
-                transition: 'background-color 0.3s ease',
+            position: "fixed", // Ensures the Box spans the entire viewport
+            top: 50, // Aligns to the top
+            left: 0, // Aligns to the left
+            backgroundColor: theme === "dark" ? "#1c1c1c" : "white", // Background color
+            width: "100vw", // Full width of the viewport
+            height: "100vh", // Full height of the viewport
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            transition: "background-color 0.3s ease", // Smooth transition
             }}
         >
             <Container maxWidth="xl">

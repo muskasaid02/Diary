@@ -156,19 +156,42 @@ const PostForm = () => {
                     }}
                 />
 
-                <FormControl fullWidth>
-                    <InputLabel>Mood</InputLabel>
-                    <Select
-                        value={mood}
-                        onChange={(e) => setMood(e.target.value)}
-                    >
-                        <MenuItem value="happy">Happy</MenuItem>
-                        <MenuItem value="sad">Sad</MenuItem>
-                        <MenuItem value="excited">Excited</MenuItem>
-                        <MenuItem value="anxious">Anxious</MenuItem>
-                        <MenuItem value="neutral">Neutral</MenuItem>
-                    </Select>
-                </FormControl>
+<FormControl
+    fullWidth
+    sx={{
+        '.MuiInputLabel-root': {
+            color: theme === 'dark' ? '#90caf9' : '#000', // Change label color in dark mode
+        },
+        '.MuiOutlinedInput-root': {
+            color: theme === 'dark' ? '#90caf9' : '#000', // Change text color
+            //'& .MuiOutlinedInput-notchedOutline': {
+                //borderColor: theme === 'dark' ? '#90caf9' : '#000', // Change border color
+            //},
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+                //borderColor: theme === 'dark' ? '#64b5f6' : '#000', // Change hover color
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: theme === 'dark' ? '#42a5f5' : '#000', // Change focus color
+            },
+        },
+        '.MuiSelect-icon': {
+            color: theme === 'dark' ? '#90caf9' : '#000', // Change dropdown arrow color
+        },
+    }}
+>
+    <InputLabel>Mood</InputLabel>
+    <Select
+        value={mood}
+        onChange={(e) => setMood(e.target.value)}
+    >
+        <MenuItem value="happy">Happy</MenuItem>
+        <MenuItem value="sad">Sad</MenuItem>
+        <MenuItem value="excited">Excited</MenuItem>
+        <MenuItem value="anxious">Anxious</MenuItem>
+        <MenuItem value="neutral">Neutral</MenuItem>
+    </Select>
+</FormControl>
+
 
                 <TextField
                     label="Password (Optional)"
