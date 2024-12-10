@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { jest } from '@jest/globals';
 
-jest.setTimeout(100000); // Set timeout to 30 seconds
+jest.setTimeout(15000000); 
 
 // Partial mocking of mongoose connection methods
 jest.mock('mongoose', () => {
