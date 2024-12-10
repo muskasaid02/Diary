@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { usePostsContext } from '../hooks/usePostsContext';
@@ -12,11 +12,14 @@ import {
     Box,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';  // Add this import
+import EditPostForm from './EditPostForm';  // Create this component next
 
 const PostHead = ({ post }) => {
     const { dispatch } = usePostsContext();
     const { user } = useAuthContext();
     const { theme } = useContext(ThemeContext);
+    const [editDialogOpen, setEditDialogOpen] = useState(false);  // Add this
 
     const handleClick = async () => {
         const response = await fetch(
@@ -80,50 +83,80 @@ const PostHead = ({ post }) => {
         whiteSpace: 'nowrap', // Ensure single-line content if necessary
     };
 
+    const handleEditClick = (e) => {
+        e.stopPropagation();
+        setEditDialogOpen(true);
+    };
+
     return (
-        <ListItem sx={postStyle}>
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-                sx={{ marginBottom: '0.5rem' }}
-            >
-                <Typography
-                    component={Link}
-                    to={`/api/posts/${post._id}`}
-                    sx={titleStyle}
+        <>
+            <ListItem sx={postStyle}>
+                <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    sx={{ marginBottom: '0.5rem' }}
                 >
-                    {post.title}
+                    <Typography
+                        component={Link}
+                        to={`/api/posts/${post._id}`}
+                        sx={titleStyle}
+                    >
+                        {post.title}
+                    </Typography>
+
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                        <IconButton
+                            onClick={handleEditClick}
+                            sx={{
+                                color: theme === 'dark' ? '#90caf9' : '#1976d2',
+                                '&:hover': {
+                                    backgroundColor: theme === 'dark'
+                                        ? 'rgba(144, 202, 249, 0.2)'
+                                        : 'rgba(25, 118, 210, 0.1)',
+                                },
+                            }}
+                        >
+                            <EditIcon />
+                        </IconButton>
+
+                        <IconButton
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleClick();
+                            }}
+                            sx={{
+                                color: theme === 'dark' ? '#e57373' : '#d32f2f',
+                                '&:hover': {
+                                    backgroundColor: theme === 'dark'
+                                        ? 'rgba(229, 115, 115, 0.2)'
+                                        : 'rgba(211, 47, 47, 0.1)',
+                                },
+                            }}
+                        >
+                            <DeleteIcon />
+                        </IconButton>
+                    </Box>
+                </Stack>
+
+                <Typography variant="body2" sx={dateStyle}>
+                    {format(new Date(post.date), 'MMMM d, y')}
                 </Typography>
 
-                <IconButton
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        handleClick();
-                    }}
-                    sx={{
-                        color: theme === 'dark' ? '#e57373' : '#d32f2f',
-                        '&:hover': {
-                            backgroundColor: theme === 'dark'
-                                ? 'rgba(229, 115, 115, 0.2)'
-                                : 'rgba(211, 47, 47, 0.1)',
-                        },
-                    }}
-                >
-                    <DeleteIcon />
-                </IconButton>
-            </Stack>
-
-            <Typography variant="body2" sx={dateStyle}>
-                {format(new Date(post.date), 'MMMM d, y')}
-            </Typography>
-
-            <Typography
-                variant="body1"
-                sx={contentStyle}
-                dangerouslySetInnerHTML={{ __html: post.content }}
+                <Typography
+                    variant="body1"
+                    sx={contentStyle}
+                    dangerouslySetInnerHTML={{ __html: post.content }}
+                />
+            </ListItem>
+            
+            <EditPostForm 
+                post={post}
+                open={editDialogOpen}
+                onClose={() => setEditDialogOpen(false)}
+                theme={theme}
             />
-        </ListItem>
+        </>
     );
 };
 
