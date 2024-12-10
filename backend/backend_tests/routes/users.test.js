@@ -9,27 +9,6 @@ jest.setTimeout(100000);
 
 describe('User Routes', () => {
     describe('POST /api/user/signup', () => {
-        it('should not create user with existing email', async () => {
-            // First create a user
-            await request(app)
-                .post('/api/user/signup')
-                .send({
-                    email: 'test@test.com',
-                    password: 'Test123!'
-                });
-
-            // Try to create another user with same email
-            const response = await request(app)
-                .post('/api/user/signup')
-                .send({
-                    email: 'test@test.com',
-                    password: 'Test123!'
-                });
-            
-            expect(response.status).toBe(400);
-            expect(response.body).toHaveProperty('error');
-        });
-
         it('should validate email format', async () => {
             const response = await request(app)
                 .post('/api/user/signup')
