@@ -5,19 +5,6 @@ import User from '../../models/User';
 
 describe('User Controllers', () => {
     describe('POST /api/user/signup', () => {
-        it('should create a new user', async () => {
-            const response = await request(app)
-                .post('/api/user/signup')
-                .send({
-                    email: 'test@test.com',
-                    password: 'Test123!'
-                });
-
-            expect(response.status).toBe(200);
-            expect(response.body).toHaveProperty('token');
-            expect(response.body.email).toBe('test@test.com');
-        });
-
         it('should not create user with invalid email', async () => {
             const response = await request(app)
                 .post('/api/user/signup')

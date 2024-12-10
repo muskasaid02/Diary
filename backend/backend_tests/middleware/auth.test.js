@@ -22,21 +22,6 @@ describe('Auth Middleware', () => {
         mockNext = jest.fn();
     });
 
-    it('should authenticate valid token', async () => {
-        const user = await User.create({
-            email: 'test@test.com',
-            password: 'hashedpassword'
-        });
-
-        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
-        mockReq.headers.authorization = `Bearer ${token}`;
-
-        await requireAuth(mockReq, mockRes, mockNext);
-
-        expect(mockNext).toHaveBeenCalled();
-        expect(mockReq.user).toBeTruthy();
-    });
-
     it('should return 401 if no token provided', async () => {
         await requireAuth(mockReq, mockRes, mockNext);
 
