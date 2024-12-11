@@ -27,7 +27,6 @@ const PostSchema = new Schema({
         type: String,
         required: false, 
         enum: ['happy', 'sad', 'excited', 'anxious', 'neutral'], 
-        default: 'neutral'
     },
 
     password: {

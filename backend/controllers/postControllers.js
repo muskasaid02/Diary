@@ -27,13 +27,16 @@ export const getPost = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
-    const { date, title, content } = req.body;
+    console.log('Received post data:', req.body);
+    const { date, title, content, mood } = req.body;
     const user_id = req.user._id;
 
     try {
-        const post = await Post.create({ date, title, content, user_id });
+        const post = await Post.create({ date, title, content, user_id, mood });
+        console.log('Created post:', post); 
         res.status(200).json(post);
     } catch (err) {
+        console.log('Created post:', post); 
         res.status(400).json({ error: err.message });
     }
 };

@@ -13,7 +13,7 @@ const PostForm = () => {
     const { user } = useAuthContext();
     const { theme } = useContext(ThemeContext);
     const [content, setContent] = useState('');
-    const [mood, setMood] = useState('neutral'); // New state for mood
+    const [mood, setMood] = useState(''); // New state for mood
 
     
     const editorModules = {
@@ -41,13 +41,15 @@ const PostForm = () => {
     ];
 
     const onSubmit = async (data) => {
+        console.log('Form data: ', data);
         const post = {
             date: data.date,
             title: data.title,
             content,
-            mood, // Include mood in the request
+            mood: mood, // Include mood in the request
             password: data.password || null,
         };
+        console.log('Post being sent:', post);
 
         try {
             const response = await fetch('https://diary-backend-utp0.onrender.com/api/posts', {

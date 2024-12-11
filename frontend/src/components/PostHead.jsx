@@ -148,6 +148,21 @@ const PostHead = ({ post }) => {
                        {format(new Date(post.date), 'MMMM d, y')}
                    </Typography>
 
+                        {post.mood && (
+                            <Typography 
+                                variant="body2" 
+                                sx={{
+                                    color: theme === 'dark' ? '#e0e0e0' : '#757575',
+                                    fontSize: '0.875rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 1
+                                }}
+                            >
+                                <span>Mood: {post.mood}</span>
+                            </Typography>
+                        )}
+
                    <Typography
                        variant="body1"
                        sx={contentStyle}
