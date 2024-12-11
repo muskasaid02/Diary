@@ -34,7 +34,7 @@ describe('useSignup', () => {
             await result.current.signup('test@example.com', 'Password123!');
         });
 
-        // Verify dispatch and state updates
+        
         expect(mockDispatch).toHaveBeenCalledWith({
             type: 'LOGIN',
             payload: { email: 'test@example.com', token: 'test-token' }

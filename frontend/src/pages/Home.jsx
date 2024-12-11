@@ -69,7 +69,7 @@ const Home = () => {
         >
             <Container maxWidth="xl" sx={{ py: 3 }}>
                 <Grid container spacing={4}>
-                    {/* Posts Section */}
+                    
                     <Grid item xs={12} md={8}>
                         <Typography
                             variant="h4"
@@ -90,7 +90,7 @@ const Home = () => {
                         </Grid>
                     </Grid>
     
-                    {/* Form Section */}
+                    
                     <Grid item xs={12} md={4}>
                         <Typography
                             variant="h4"

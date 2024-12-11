@@ -12,11 +12,11 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
     <React.StrictMode>
-        <ThemeProvider> {/* Custom ThemeProvider, including Material UI ThemeProvider */}
+        <ThemeProvider> 
             <AuthContextProvider>
                 <PostsContextProvider>
                     <Router>
-                    <div style={{ height: '100%' }}> {/* Ensure full height */}
+                    <div style={{ height: '100%' }}> 
                         <App />
                         </div>
                     </Router>

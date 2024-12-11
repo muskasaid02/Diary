@@ -31,13 +31,13 @@ describe('useLogout', () => {
             result.current.logout();
         });
 
-        // Assert that user is removed from local storage
+        
         expect(global.localStorage.getItem('user')).toBeNull();
 
-        // Assert that AuthContext dispatch was called with LOGOUT
+        
         expect(mockAuthDispatch).toHaveBeenCalledWith({ type: 'LOGOUT' });
 
-        // Assert that PostsContext dispatch was called with SET_POSTS and payload null
+        
         expect(mockPostsDispatch).toHaveBeenCalledWith({ type: 'SET_POSTS', payload: null });
     });
 });

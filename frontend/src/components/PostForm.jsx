@@ -15,7 +15,7 @@ const PostForm = () => {
     const [content, setContent] = useState('');
     const [mood, setMood] = useState('neutral'); // New state for mood
 
-    // Define editorModules and editorFormats outside of any function
+    
     const editorModules = {
         toolbar: [
             [{ font: [] }],
