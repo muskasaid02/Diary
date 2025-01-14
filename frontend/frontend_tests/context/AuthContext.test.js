@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { AuthContext, AuthContextProvider } from '../../src/context/AuthContext';
 
 describe('AuthContext', () => {
-    let TestComponent; 
+    let TestComponent; // Use PascalCase for React component naming
     let renderedContext;
 
     beforeEach(() => {
@@ -20,7 +20,7 @@ describe('AuthContext', () => {
             </AuthContextProvider>
         );
 
-        
+        // Check initial state provided by AuthContextProvider
         expect(renderedContext.user).toBe(null);
         expect(typeof renderedContext.dispatch).toBe('function');
     });
@@ -33,14 +33,14 @@ describe('AuthContext', () => {
         );
 
         act(() => {
-            
+            // Dispatch a LOGIN action
             renderedContext.dispatch({
                 type: 'LOGIN',
                 payload: { email: 'test@example.com', token: 'test-token' }
             });
         });
 
-        
+        // Check updated state after LOGIN action
         expect(renderedContext.user).toEqual({
             email: 'test@example.com',
             token: 'test-token'
@@ -55,11 +55,11 @@ describe('AuthContext', () => {
         );
 
         act(() => {
-            
+            // Dispatch a LOGOUT action
             renderedContext.dispatch({ type: 'LOGOUT' });
         });
 
-        
+        // Check state after LOGOUT action
         expect(renderedContext.user).toBe(null);
     });
 });

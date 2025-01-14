@@ -50,33 +50,27 @@ const Home = () => {
     return (
         <Box
             sx={{
-                position: "fixed",
-                top: 50,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: theme === "dark" ? "#1c1c1c" : "white",
-                width: "100%",
-                height: "calc(100vh - 50px)", // Subtract the top offset
-                overflowY: "auto", // Add scroll for content
-                transition: "background-color 0.3s ease",
-                backgroundColor: theme === 'dark' ? '#1c1c1c' : '#fff',
-                color: theme === 'dark' ? '#fff' : '#000',
-                minHeight: '100vh',
-                padding: '20px',
-                transition: 'background-color 0.3s ease',
+            position: "fixed", // Ensures the Box spans the entire viewport
+            top: 50, // Aligns to the top
+            left: 0, // Aligns to the left
+            backgroundColor: theme === "dark" ? "#1c1c1c" : "white", // Background color
+            width: "100vw", // Full width of the viewport
+            height: "100vh", // Full height of the viewport
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            transition: "background-color 0.3s ease", // Smooth transition
             }}
         >
-            <Container maxWidth="xl" sx={{ py: 3 }}>
+            <Container maxWidth="xl">
                 <Grid container spacing={4}>
-                    
+                    {/* Posts Section */}
                     <Grid item xs={12} md={8}>
                         <Typography
                             variant="h4"
                             sx={{
                                 color: theme === 'dark' ? '#90caf9' : '#000',
-                                mb: 3,
-                                textAlign: 'left'
+                                mb: 3
                             }}
                         >
                             Posts
@@ -89,16 +83,15 @@ const Home = () => {
                             ))}
                         </Grid>
                     </Grid>
-    
-                    
+
+                    {/* Form Section */}
                     <Grid item xs={12} md={4}>
                         <Typography
                             variant="h4"
                             sx={{
                                 color: theme === 'dark' ? '#90caf9' : '#000',
                                 mb: 3,
-                                marginLeft: '25px',
-                                textAlign: 'left'
+                                marginLeft: '25px'
                             }}
                         >
                             Create a Post
