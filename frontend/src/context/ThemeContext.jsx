@@ -22,6 +22,10 @@ export const ThemeProvider = ({ children }) => {
         localStorage.setItem('theme', newTheme); // Store theme in localStorage
     };
 
+    //useEffect(() => {
+      //  document.body.classList.toggle('dark-theme', theme === 'dark');
+    //}, [theme]);
+
     useEffect(() => {
         if (theme === 'dark') {
             document.body.classList.add('dark-theme');

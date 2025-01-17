@@ -1,9 +1,8 @@
-// frontend_tests/hooks/useSignup.test.js
 import { renderHook, act } from '@testing-library/react';
 import { AuthContext } from '../../src/context/AuthContext';
-import { useSignup } from '../../src/hooks/useSignup';
+import { useLogin } from '../../src/hooks/useLogin';
 
-describe('useSignup', () => {
+describe('useLogin', () => {
     const mockDispatch = jest.fn();
 
     beforeEach(() => {
@@ -18,7 +17,7 @@ describe('useSignup', () => {
         </AuthContext.Provider>
     );
 
-    it('handles successful signup', async () => {
+    it('handles successful login', async () => {
         const mockResponse = {
             ok: true,
             json: () => Promise.resolve({
@@ -28,37 +27,38 @@ describe('useSignup', () => {
         };
         global.fetch.mockResolvedValueOnce(mockResponse);
 
-        const { result } = renderHook(() => useSignup(), { wrapper });
+        const { result } = renderHook(() => useLogin(), { wrapper });
 
         await act(async () => {
-            await result.current.signup('test@example.com', 'Password123!');
+            await result.current.login('test@example.com', 'password123');
         });
 
-        // Verify dispatch and state updates
         expect(mockDispatch).toHaveBeenCalledWith({
             type: 'LOGIN',
-            payload: { email: 'test@example.com', token: 'test-token' }
+            payload: {
+                email: 'test@example.com',
+                token: 'test-token',
+            },
         });
-        expect(global.localStorage.getItem('user')).toBe(JSON.stringify({ email: 'test@example.com', token: 'test-token' }));
         expect(result.current.error).toBe(null);
-        expect(result.current.loading).toBe(false);
+        expect(result.current.loading).toBe(false); // Correctly reference "loading"
     });
 
-    it('handles signup failure', async () => {
+    it('handles login failure', async () => {
         const mockResponse = {
             ok: false,
-            json: () => Promise.resolve({ error: 'Email already exists' })
+            json: () => Promise.resolve({ error: 'Invalid credentials' })
         };
         global.fetch.mockResolvedValueOnce(mockResponse);
 
-        const { result } = renderHook(() => useSignup(), { wrapper });
+        const { result } = renderHook(() => useLogin(), { wrapper });
 
         await act(async () => {
-            await result.current.signup('test@example.com', 'Password123!');
+            await result.current.login('test@example.com', 'wrongpassword');
         });
 
         expect(mockDispatch).not.toHaveBeenCalled();
-        expect(result.current.error).toBe('Email already exists');
-        expect(result.current.loading).toBe(false);
+        expect(result.current.error).toBe('Invalid credentials');
+        expect(result.current.loading).toBe(false); // Correctly reference "loading"
     });
 });

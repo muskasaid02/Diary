@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import { usePostsContext } from '../hooks/usePostsContext';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { ThemeContext } from '../context/ThemeContext';
+import MoodIcon from '@mui/icons-material/Mood';
 import {
    ListItem,
    Typography,
@@ -84,6 +85,14 @@ const PostHead = ({ post }) => {
        flex: 1
    };
 
+   const moodStyle = {
+    color: theme === 'dark' ? '#e0e0e0' : '#757575',
+    fontSize: '0.875rem',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px'
+};
+
    const handleEditClick = (e) => {
        e.stopPropagation();
        setEditDialogOpen(true);
@@ -147,6 +156,12 @@ const PostHead = ({ post }) => {
                    <Typography variant="body2" sx={dateStyle}>
                        {format(new Date(post.date), 'MMMM d, y')}
                    </Typography>
+
+                                   {/* Mood Display */}
+                <Box sx={moodStyle}>
+                    <MoodIcon />
+                    <span>{post.mood}</span>
+                </Box>
 
                    <Typography
                        variant="body1"

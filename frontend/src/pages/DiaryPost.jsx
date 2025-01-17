@@ -35,7 +35,7 @@ const DiaryPost = () => {
         };
 
         if (user) fetchPost();
-    }, [id, user]); 
+    }, [id, user]);
 
     if (!post && !passwordRequired) {
         return (
