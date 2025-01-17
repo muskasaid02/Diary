@@ -16,27 +16,27 @@ describe("Post Model - Mocked Tests", () => {
             content: "Test Content",
             date: new Date(),
             user_id: new mongoose.Types.ObjectId(),
-            password: "PlainPassword123", // Original plain text password
+            password: "PlainPassword123", 
         };
 
-        // 🔹 Generate a real bcrypt hash
+        
         const hashedPassword = await bcrypt.hash(validPost.password, 10);
 
-        // ✅ Directly mock `Post.create()` to return an object with hashed password
+        
         jest.spyOn(Post, "create").mockResolvedValue({
             ...validPost,
-            password: hashedPassword, // Force a hashed password in mock
+            password: hashedPassword, 
         });
 
         const post = await Post.create(validPost);
 
-        // ✅ Check if password is not in plain text
+        
         expect(post.password).not.toBe(validPost.password);
 
-        // ✅ Ensure password follows bcrypt hash pattern
+        
         expect(post.password).toMatch(/^\$2[ayb]\$.{56}$/);
 
-        // 🧹 Clean up the mock after test
+        
         jest.restoreAllMocks();
     });
 
@@ -79,15 +79,15 @@ describe("Post Model - Mocked Tests", () => {
             content: "Test Content",
             date: new Date(),
             user_id: new mongoose.Types.ObjectId(),
-            mood: "angry", // Invalid mood
+            mood: "angry", 
         };
     
-        // Force a rejection
+        
         jest.spyOn(Post, "create").mockRejectedValue(new Error("Invalid mood"));
     
         await expect(Post.create(invalidPost)).rejects.toThrow("Invalid mood");
     
-        // Cleanup mock
+        
         jest.restoreAllMocks();
     });
     

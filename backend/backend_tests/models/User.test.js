@@ -18,13 +18,13 @@ describe("User Model - Mocked Tests", () => {
                 password: "Test123!",
             };
 
-            const hashedPassword = "$2b$10$hashedpassword"; // Simulated bcrypt hash
+            const hashedPassword = "$2b$10$hashedpassword"; 
             mockingoose(User).toReturn({ ...userData, password: hashedPassword }, "save");
 
             const user = await User.signup(userData.email, userData.password);
 
             expect(user.email).toBe(userData.email);
-            expect(user.password).not.toBe(userData.password); // Should be hashed
+            expect(user.password).not.toBe(userData.password); 
         });
 
         it("should not create user with invalid email", async () => {
@@ -39,17 +39,17 @@ describe("User Model - Mocked Tests", () => {
         it("should login a valid user", async () => {
             const userData = {
                 email: "test@test.com",
-                password: await bcrypt.hash("Test123!", 10), // Simulate hashing
+                password: await bcrypt.hash("Test123!", 10), 
             };
 
-            // Ensure `findOne` returns a user with a hashed password
+            
             jest.spyOn(User, "findOne").mockResolvedValue(userData);
 
             const user = await User.login("test@test.com", "Test123!");
 
             expect(user.email).toBe("test@test.com");
 
-            // Cleanup mock
+            
             jest.restoreAllMocks();
         });
 
@@ -57,17 +57,17 @@ describe("User Model - Mocked Tests", () => {
         it("should not login with incorrect password", async () => {
             const userData = {
                 email: "test@test.com",
-                password: await bcrypt.hash("Test123!", 10), // Simulated hashed password
+                password: await bcrypt.hash("Test123!", 10), 
             };
         
             jest.spyOn(User, "findOne").mockResolvedValue(userData);
-            jest.spyOn(bcrypt, "compare").mockResolvedValue(false); // Simulate password mismatch
+            jest.spyOn(bcrypt, "compare").mockResolvedValue(false); 
         
             await expect(User.login("test@test.com", "WrongPass123!"))
                 .rejects
                 .toThrow("incorrect password");
         
-            // Cleanup
+            
             jest.restoreAllMocks();
         });
         
