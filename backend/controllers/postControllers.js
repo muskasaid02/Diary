@@ -27,16 +27,30 @@ export const getPost = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
-    const { date, title, content } = req.body;
+    const { date, title, content, password } = req.body;
     const user_id = req.user._id;
 
     try {
-        const post = await Post.create({ date, title, content, user_id });
+        let hashedPassword = null;
+        if (password) {
+            const salt = await bcrypt.genSalt(10);
+            hashedPassword = await bcrypt.hash(password, salt);
+        }
+
+        const post = await Post.create({
+            date,
+            title,
+            content,
+            user_id,
+            password: hashedPassword,
+        });
+
         res.status(200).json(post);
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
 };
+
 
 export const deletePost = async (req, res) => {
     const { id } = req.params;

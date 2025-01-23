@@ -7,17 +7,14 @@ const PostSchema = new Schema({
         required: true,
         default: Date.now
     },
-
     title: {
         type: String,
         required: true
     },
-    
     content: {
         type: String,
         required: true
     },
-
     user_id: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -25,16 +22,15 @@ const PostSchema = new Schema({
     },
     mood: {
         type: String,
-        required: false, // Optional
-        enum: ['happy', 'sad', 'excited', 'anxious', 'neutral'], // Define allowed moods
+        required: false, 
+        enum: ['happy', 'sad', 'excited', 'anxious', 'neutral'], 
         default: 'neutral'
     },
-
     password: {
-        type: String,
-        required: false
+        type: String,  // Add password field
+        required: false,
+        default: null  // Default value for new documents
     }
-
 }, {
     collection: 'posts',
     timestamps: true
