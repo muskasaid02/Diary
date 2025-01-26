@@ -53,7 +53,7 @@ const DiaryPost = () => {
 
         try {
             const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${id}`, {
-                method: 'POST',
+                method: 'GET',
                 headers,
                 body: JSON.stringify({ password }),
             });
