@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import Post from '../models/Post.js';
-import bcrypt from 'bcrypt';
 
 export const getAllPosts = async (req, res) => {
     const user_id = req.user._id;
