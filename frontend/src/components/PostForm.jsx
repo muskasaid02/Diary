@@ -45,7 +45,7 @@ const PostForm = () => {
             date: data.date,
             title: data.title,
             content: content,  // Ensure content state is used
-            mood:mood, 
+            mood,
             password: data.password ? data.password : null,  // Ensure password is included
         };
     
@@ -66,6 +66,7 @@ const PostForm = () => {
             if (response.ok) {
                 reset({ title: '', date: '', password: '' });
                 setContent('');
+                setMood('');
                 dispatch({ type: 'CREATE_POST', payload: json });
             } else {
                 console.error("Failed to create post:", json);
