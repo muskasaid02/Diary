@@ -15,11 +15,18 @@ export const getAllPosts = async (req, res) => {
 
 export const getPost = async (req, res) => {
     const { id } = req.params;
+    const { password } = req.body;
+    console.log("Password got from:", password);
 
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ error: 'post does not exist' });
 
     try {
         const post = await Post.findById(id);
+        if (password){
+            const isMatch = await bcrypt.compare(password, post.password);
+            console.log("Password Match:", isMatch);  // Debug log
+            if (!isMatch) return res.status(403).json({ error: 'incorrect password' });
+        }
         if (!post) return res.status(404).json({ error: 'post does not exist' });
         res.status(200).json(post);
     } catch (err) {
