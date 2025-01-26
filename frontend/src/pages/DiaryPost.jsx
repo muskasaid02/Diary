@@ -17,17 +17,27 @@ const DiaryPost = () => {
         const fetchPost = async () => {
             const headers = {
                 Authorization: `Bearer ${user.token}`,
+                'Content-Type': 'application/json',
             };
+
             try {
                 const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${id}`, {
-                    method: 'GET',
+                    method: 'POST', 
                     headers,
+                    body: JSON.stringify({ password: password || null }),
                 });
+
+                const json = await response.json();
+
                 if (response.ok) {
-                    const json = await response.json();
                     setPost(json);
+                    setPasswordRequired(false);
                 } else {
-                    setPasswordRequired(true);
+                    if (response.status === 403) {
+                        setPasswordRequired(true);
+                    } else {
+                        setError(json.error || 'Failed to fetch post.');
+                    }
                 }
             } catch (err) {
                 setError('Failed to load post.');
@@ -37,6 +47,34 @@ const DiaryPost = () => {
         if (user) fetchPost();
     }, [id, user]);
 
+    const handlePasswordSubmit = async (e) => {
+        e.preventDefault();
+        const headers = {
+            Authorization: `Bearer ${user.token}`,
+            'Content-Type': 'application/json',
+        };
+
+        try {
+            const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${id}`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ password }),
+            });
+
+            const json = await response.json();
+
+            if (response.ok) {
+                setPost(json);
+                setPasswordRequired(false);
+                setError(null);
+            } else {
+                setError('Incorrect password. Please try again.');
+            }
+        } catch (err) {
+            setError('Failed to validate password.');
+        }
+    };
+
     if (!post && !passwordRequired) {
         return (
             <Box
@@ -45,7 +83,7 @@ const DiaryPost = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     height: '100vh',
-                    backgroundColor: theme === 'dark' ? '#1c1c1c' : 'white', // Background color
+                    backgroundColor: theme === 'dark' ? '#1c1c1c' : 'white',
                     color: theme === 'dark' ? 'white' : 'black',
                 }}
             >
@@ -58,12 +96,12 @@ const DiaryPost = () => {
         <Box
             sx={{
                 position: 'absolute',
-                top: 50, // Add spacing to account for the header
+                top: 50,
                 left: 0,
                 right: 0,
                 bottom: 0,
                 minHeight: '100vh',
-                backgroundColor: theme === 'dark' ? '#1c1c1c' : 'white', // Dark mode background
+                backgroundColor: theme === 'dark' ? '#1c1c1c' : 'white',
                 color: theme === 'dark' ? 'white' : 'black',
                 display: 'flex',
                 justifyContent: 'center',
@@ -84,12 +122,13 @@ const DiaryPost = () => {
                     }}
                 >
                     <Typography>Password Required</Typography>
-                    <form>
+                    <form onSubmit={handlePasswordSubmit}>
                         <TextField
                             label="Password"
                             type="password"
                             fullWidth
                             required
+                            value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             sx={{
                                 marginBottom: '1rem',
@@ -99,6 +138,11 @@ const DiaryPost = () => {
                         <Button type="submit" variant="contained" fullWidth>
                             Submit
                         </Button>
+                        {error && (
+                            <Typography color="error" sx={{ mt: 2 }}>
+                                {error}
+                            </Typography>
+                        )}
                     </form>
                 </Paper>
             ) : (
