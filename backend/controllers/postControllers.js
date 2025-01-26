@@ -28,7 +28,7 @@ export const getPost = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
-    const { date, title, content, password } = req.body;
+    const { date, title, content, password, mood} = req.body;
     console.log("Body", req.body);
     const user_id = req.user._id;
 
