@@ -66,7 +66,7 @@ const PostForm = () => {
             if (response.ok) {
                 reset({ title: '', date: '', password: '' });
                 setContent('');
-                setMood('');
+                setMood('neutral');
                 dispatch({ type: 'CREATE_POST', payload: json });
             } else {
                 console.error("Failed to create post:", json);
