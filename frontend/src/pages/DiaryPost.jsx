@@ -17,30 +17,32 @@ const DiaryPost = () => {
         const fetchPost = async () => {
             const headers = {
                 Authorization: `Bearer ${user.token}`,
+                'Content-Type': 'application/json',
             };
 
             try {
                 const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${id}`, {
-                    method: 'POST', //Changed this to POST
+                    method: 'POST',
                     headers,
+                    body: JSON.stringify({ password: '' }),  // Send an empty password initially
                 });
 
+                const json = await response.json();
+
                 if (response.ok) {
-                    const json = await response.json();
-                    if (json.password) {
-                        setPasswordRequired(true); // If password exists in post, prompt user
-                    } else {
-                        setPost(json);
-                    }
+                    setPost(json);
+                    setPasswordRequired(false);
+                } else if (response.status === 403) {
+                    setPasswordRequired(true);
                 } else {
-                    setError('Post not found.');
+                    setError(json.error || 'Failed to load post.');
                 }
             } catch (err) {
                 setError('Failed to load post.');
             }
         };
 
-        if (user && id) fetchPost();
+        if (user) fetchPost();
     }, [id, user]);
 
     const handlePasswordSubmit = async (e) => {
@@ -58,8 +60,9 @@ const DiaryPost = () => {
                 body: JSON.stringify({ password }),
             });
 
+            const json = await response.json();
+
             if (response.ok) {
-                const json = await response.json();
                 setPost(json);
                 setPasswordRequired(false);
             } else {
@@ -70,17 +73,18 @@ const DiaryPost = () => {
         }
     };
 
-    if (error) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-                <Typography color="error">{error}</Typography>
-            </Box>
-        );
-    }
-
     if (!post && !passwordRequired) {
         return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100vh',
+                    backgroundColor: theme === 'dark' ? '#1c1c1c' : 'white',
+                    color: theme === 'dark' ? 'white' : 'black',
+                }}
+            >
                 <Typography>Loading...</Typography>
             </Box>
         );
@@ -167,4 +171,3 @@ const DiaryPost = () => {
 };
 
 export default DiaryPost;
-
