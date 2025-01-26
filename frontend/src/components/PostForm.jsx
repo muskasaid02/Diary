@@ -156,11 +156,11 @@ const PostForm = () => {
                         value={mood}
                         onChange={(e) => setMood(e.target.value)}
                     >
-                        <MenuItem value="Happy">Happy</MenuItem>
-                        <MenuItem value="Sad">Sad</MenuItem>
-                        <MenuItem value="Excited">Excited</MenuItem>
-                        <MenuItem value="Anxious">Anxious</MenuItem>
-                        <MenuItem value="Neutral">Neutral</MenuItem>
+                        <MenuItem value="happy">Happy</MenuItem>
+                        <MenuItem value="sad">Sad</MenuItem>
+                        <MenuItem value="excited">Excited</MenuItem>
+                        <MenuItem value="anxious">Anxious</MenuItem>
+                        <MenuItem value="neutral">Neutral</MenuItem>
                     </Select>
                 </FormControl>
 
