@@ -57,6 +57,7 @@ const DiaryPost = () => {
                 headers,
                 body: JSON.stringify({ password }),
             });
+            console.log("Password in handlePasswordSubmit:", password);
 
             if (response.ok) {
                 const json = await response.json();
