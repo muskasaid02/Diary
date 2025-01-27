@@ -55,9 +55,7 @@ const DiaryPost = () => {
             const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${id}`, {
                 method: 'GET',
                 headers,
-                body: JSON.stringify({ password }),
             });
-            console.log("Password in handlePasswordSubmit:", password);
 
             if (response.ok) {
                 const json = await response.json();
