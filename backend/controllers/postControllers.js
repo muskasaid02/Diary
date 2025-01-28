@@ -15,7 +15,7 @@ export const getAllPosts = async (req, res) => {
 
 export const getPost = async (req, res) => {
     const { id } = req.params;
-    const { password } = req.body;
+    const { password } = req.query;
     console.log("Password got from:", password);
 
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ error: 'post does not exist' });
