@@ -38,7 +38,7 @@ const NavBar = () => {
                         padding: '0 10px', // Reduce vertical padding
                     }}
                 >
-                    
+                    {/* Left: Home Link */}
                     <Typography
                         variant="h6"
                         component="div"
@@ -57,7 +57,7 @@ const NavBar = () => {
                         </Link>
                     </Typography>
 
-                    
+                    {/* Center: App Title */}
                     <Typography
                         variant="h6"
                         component="div"
@@ -69,14 +69,14 @@ const NavBar = () => {
                         The Diary App
                     </Typography>
 
-                    
+                    {/* Right: Theme Toggle and Auth Buttons */}
                     <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                        
+                        {/* Theme Toggle */}
                         <Button color="inherit" onClick={toggleTheme} sx={{ minWidth: 'auto', padding: 0 }}>
                             {theme === 'light' ? <FaMoon /> : <FaSun />}
                         </Button>
 
-                        
+                        {/* Auth Buttons */}
                         {user ? (
                             <>
                                 <Typography

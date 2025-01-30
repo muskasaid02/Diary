@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import Post from '../models/Post.js';
+import bcrypt from 'bcrypt';
 
 export const getAllPosts = async (req, res) => {
     const user_id = req.user._id;
@@ -14,11 +15,18 @@ export const getAllPosts = async (req, res) => {
 
 export const getPost = async (req, res) => {
     const { id } = req.params;
+    const { password } = req.query;
+    console.log("Password got from:", password);
 
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ error: 'post does not exist' });
 
     try {
         const post = await Post.findById(id);
+        if (password){
+            const isMatch = await bcrypt.compare(password, post.password);
+            console.log("Password Match:", isMatch);  // Debug log
+            if (!isMatch) return res.status(403).json({ error: 'incorrect password' });
+        }
         if (!post) return res.status(404).json({ error: 'post does not exist' });
         res.status(200).json(post);
     } catch (err) {
@@ -27,16 +35,32 @@ export const getPost = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
-    const { date, title, content } = req.body;
+    const { date, title, content, password, mood} = req.body;
+    console.log("Body", req.body);
     const user_id = req.user._id;
 
     try {
-        const post = await Post.create({ date, title, content, user_id });
+        let hashedPassword = null;
+        if (password) {
+            const salt = await bcrypt.genSalt(10);
+            hashedPassword = await bcrypt.hash(password, salt);
+        }
+
+        const post = await Post.create({
+            date,
+            title,
+            content,
+            user_id,
+            mood,
+            password: hashedPassword,
+        });
+
         res.status(200).json(post);
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
 };
+
 
 export const deletePost = async (req, res) => {
     const { id } = req.params;
