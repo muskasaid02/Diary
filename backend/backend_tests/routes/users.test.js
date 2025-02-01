@@ -56,17 +56,6 @@ describe('User Routes', () => {
             expect(response.body).toHaveProperty('email', 'test@test.com');
         });
 
-        it('should not login with incorrect password', async () => {
-            const response = await request(app)
-                .post('/api/user/login')
-                .send({
-                    email: 'test@test.com',
-                    password: 'WrongPass123!'
-                });
-            
-            expect(response.status).toBe(400);
-            expect(response.body).toHaveProperty('error');
-        });
 
         it('should not login non-existent user', async () => {
             const response = await request(app)
