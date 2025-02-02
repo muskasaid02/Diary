@@ -33,6 +33,6 @@ const MoodCalendar = () => {
             />
         </div>
     );
-};
+}; 
 
 export default MoodCalendar;
