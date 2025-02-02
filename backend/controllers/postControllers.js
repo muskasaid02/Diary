@@ -15,7 +15,7 @@ export const getAllPosts = async (req, res) => {
 
 export const getPost = async (req, res) => {
     const { id } = req.params;
-    const { password } = req.query; // Changed back to query params
+    const { password } = req.query;
 
     console.log('==== GET POST REQUEST ====');
     console.log('Post ID:', id);
@@ -35,12 +35,12 @@ export const getPost = async (req, res) => {
         }
 
         console.log('Post found');
+        console.log('Stored hashed password:', post.password);
         console.log('Post has password:', !!post.password);
 
         // Check if post is password protected
         if (post.password) {
             console.log('Post is password protected');
-            
             // If no password provided
             if (!password) {
                 console.log('No password provided for protected post');
@@ -49,20 +49,25 @@ export const getPost = async (req, res) => {
                     isPasswordProtected: true 
                 });
             }
+            try {
+                const isMatch = await bcrypt.compare(password, post.password);
+                console.log('Input password:', password);
+                console.log('Stored hash:', post.password);
+                console.log('Password verification result:', isMatch);
 
-            // Verify password
-            const isMatch = await bcrypt.compare(password, post.password);
-            console.log('Password verification result:', isMatch);
+                if (!isMatch) {
+                    console.log('Password verification failed');
+                    return res.status(403).json({ 
+                        error: 'Incorrect password',
+                        isPasswordProtected: true 
+                    });
+                }
 
-            if (!isMatch) {
-                console.log('Password verification failed');
-                return res.status(403).json({ 
-                    error: 'Incorrect password',
-                    isPasswordProtected: true 
-                });
+                console.log('Password verified successfully');
+            } catch (error) {
+                console.error('Error in password comparison:', error);
+                return res.status(500).json({ error: 'Error verifying password' });
             }
-
-            console.log('Password verified successfully');
         }
 
         console.log('Returning post data');
@@ -74,15 +79,20 @@ export const getPost = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
-    const { date, title, content, password, mood} = req.body;
-    console.log("Body", req.body);
+    const { date, title, content, password, mood } = req.body;
     const user_id = req.user._id;
+
+    console.log('==== CREATE POST REQUEST ====');
+    console.log('Creating post with password:', !!password);
 
     try {
         let hashedPassword = null;
         if (password) {
-            const salt = await bcrypt.genSalt(10);
-            hashedPassword = await bcrypt.hash(password, salt);
+            // Use a fixed salt rounds value
+            const saltRounds = 10;
+            hashedPassword = await bcrypt.hash(password, saltRounds);
+            console.log('Original password:', password);
+            console.log('Generated hash:', hashedPassword);
         }
 
         const post = await Post.create({
@@ -94,8 +104,12 @@ export const createPost = async (req, res) => {
             password: hashedPassword,
         });
 
+        console.log('Post created successfully');
+        console.log('Stored password hash:', post.password);
+
         res.status(200).json(post);
     } catch (err) {
+        console.error('Error creating post:', err);
         res.status(400).json({ error: err.message });
     }
 };
