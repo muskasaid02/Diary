@@ -4,7 +4,8 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^6.1.6",
     "@mui/material": "^6.1.6",
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.4.7",
+    "react-calendar": "^5.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
