@@ -14,11 +14,11 @@ export const getAllPosts = async (req, res) => {
 };
 
 export const getPost = async (req, res) => {
-    console.log('BASIC TEST LOG - getPost called');  // Very basic log
+    console.log('BASIC TEST LOG - getPost called');
     const { id } = req.params;
     const { password } = req.query;
 
-    console.log('Request params:', { id, password });  // Simple log of received data
+    console.log('Request params:', { id, password });
 
     try {
         const post = await Post.findById(id);
@@ -27,11 +27,12 @@ export const getPost = async (req, res) => {
             return res.status(404).json({ error: 'Post does not exist' });
         }
 
-        // Simple check to see if we get here
         console.log('Post found:', post._id);
         
         if (post.password) {
-            console.log('Post is password protected');  // Check if this runs
+            console.log('Post is password protected');
+            console.log('Stored hash in database:', post.password);
+            console.log('Attempting to match with password:', password);
             
             if (!password) {
                 return res.status(403).json({ 
@@ -40,14 +41,28 @@ export const getPost = async (req, res) => {
                 });
             }
 
-            const isMatch = await bcrypt.compare(password, post.password);
-            console.log('Password check result:', isMatch);  // Log the result
+            // Ensure we're working with strings
+            const storedHash = post.password.toString();
+            const attemptedPassword = password.toString();
 
-            if (!isMatch) {
-                return res.status(403).json({ 
-                    error: 'Incorrect password',
-                    isPasswordProtected: true 
-                });
+            console.log('Types:', {
+                storedHashType: typeof storedHash,
+                attemptedPasswordType: typeof attemptedPassword
+            });
+
+            try {
+                const isMatch = await bcrypt.compare(attemptedPassword, storedHash);
+                console.log('Password check result:', isMatch);
+
+                if (!isMatch) {
+                    return res.status(403).json({ 
+                        error: 'Incorrect password',
+                        isPasswordProtected: true 
+                    });
+                }
+            } catch (bcryptError) {
+                console.error('bcrypt error:', bcryptError);
+                return res.status(500).json({ error: 'Error comparing passwords' });
             }
         }
 
@@ -62,17 +77,17 @@ export const createPost = async (req, res) => {
     const { date, title, content, password, mood } = req.body;
     const user_id = req.user._id;
 
-    console.log('==== CREATE POST REQUEST ====');
-    console.log('Creating post with password:', !!password);
+    console.log("=== CREATE POST REQUEST ===");
+    console.log("Received password:", password ? "Yes" : "No");
 
     try {
         let hashedPassword = null;
         if (password) {
-            // Use a fixed salt rounds value
-            const saltRounds = 10;
-            hashedPassword = await bcrypt.hash(password, saltRounds);
-            console.log('Original password:', password);
-            console.log('Generated hash:', hashedPassword);
+            console.log("Hashing password...");
+            const salt = await bcrypt.genSalt(10);
+            hashedPassword = await bcrypt.hash(password, salt);
+            console.log("Password hashed successfully");
+            console.log("Hash generated:", hashedPassword);
         }
 
         const post = await Post.create({
@@ -84,12 +99,13 @@ export const createPost = async (req, res) => {
             password: hashedPassword,
         });
 
-        console.log('Post created successfully');
-        console.log('Stored password hash:', post.password);
+        console.log("Post created successfully");
+        console.log("Post ID:", post._id);
+        console.log("Has password protection:", !!post.password);
 
         res.status(200).json(post);
     } catch (err) {
-        console.error('Error creating post:', err);
+        console.error("Error creating post:", err);
         res.status(400).json({ error: err.message });
     }
 };
