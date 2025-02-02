@@ -94,7 +94,7 @@ const DiaryPost = () => {
             checkPost();
         }
     }, [id, user]);
-    
+
     // Handle password submission
     const handlePasswordSubmit = async (e) => {
         e.preventDefault();
@@ -114,6 +114,7 @@ const DiaryPost = () => {
             </Box>
         );
     }
+
 
     return (
         <Box
