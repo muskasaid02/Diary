@@ -14,76 +14,46 @@ export const getAllPosts = async (req, res) => {
 };
 
 export const getPost = async (req, res) => {
+    console.log('BASIC TEST LOG - getPost called');  // Very basic log
     const { id } = req.params;
-    const password = req.query.password ? decodeURIComponent(req.query.password) : null;
+    const { password } = req.query;
 
-    console.log('==== GET POST REQUEST ====');
-    console.log('Post ID:', id);
-    console.log('Received encoded password:', req.query.password);
-    console.log('Decoded password:', password);
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        console.log('Invalid post ID');
-        return res.status(404).json({ error: 'Post does not exist' });
-    }
+    console.log('Request params:', { id, password });  // Simple log of received data
 
     try {
         const post = await Post.findById(id);
         
         if (!post) {
-            console.log('Post not found');
             return res.status(404).json({ error: 'Post does not exist' });
         }
 
-        console.log('Post found');
-        console.log('Stored hashed password:', post.password);
-        console.log('Post has password:', !!post.password);
-
-        // Check if post is password protected
+        // Simple check to see if we get here
+        console.log('Post found:', post._id);
+        
         if (post.password) {
-            console.log('Post is password protected');
+            console.log('Post is password protected');  // Check if this runs
             
-            // If no password provided
             if (!password) {
-                console.log('No password provided for protected post');
                 return res.status(403).json({ 
                     error: 'Password required', 
                     isPasswordProtected: true 
                 });
             }
 
-            // Verify password
-            try {
-                // Ensure both the stored hash and provided password are strings
-                const storedHash = String(post.password);
-                const providedPassword = String(password);
+            const isMatch = await bcrypt.compare(password, post.password);
+            console.log('Password check result:', isMatch);  // Log the result
 
-                console.log('About to compare:');
-                console.log('Provided password:', providedPassword);
-                console.log('Stored hash:', storedHash);
-
-                const isMatch = await bcrypt.compare(providedPassword, storedHash);
-                console.log('Password verification result:', isMatch);
-
-                if (!isMatch) {
-                    console.log('Password verification failed');
-                    return res.status(403).json({ 
-                        error: 'Incorrect password',
-                        isPasswordProtected: true 
-                    });
-                }
-
-                console.log('Password verified successfully');
-            } catch (error) {
-                console.error('Error in password comparison:', error);
-                return res.status(500).json({ error: 'Error verifying password' });
+            if (!isMatch) {
+                return res.status(403).json({ 
+                    error: 'Incorrect password',
+                    isPasswordProtected: true 
+                });
             }
         }
 
-        console.log('Returning post data');
         res.status(200).json(post);
     } catch (err) {
-        console.error('Error in getPost:', err);
+        console.error('Error:', err);
         res.status(400).json({ error: err.message });
     }
 };
