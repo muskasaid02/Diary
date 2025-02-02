@@ -15,11 +15,12 @@ export const getAllPosts = async (req, res) => {
 
 export const getPost = async (req, res) => {
     const { id } = req.params;
-    const { password } = req.query;
+    const password = req.query.password ? decodeURIComponent(req.query.password) : null;
 
     console.log('==== GET POST REQUEST ====');
     console.log('Post ID:', id);
-    console.log('Attempting with password:', password || 'No password provided');
+    console.log('Received encoded password:', req.query.password);
+    console.log('Decoded password:', password);
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         console.log('Invalid post ID');
@@ -41,6 +42,7 @@ export const getPost = async (req, res) => {
         // Check if post is password protected
         if (post.password) {
             console.log('Post is password protected');
+            
             // If no password provided
             if (!password) {
                 console.log('No password provided for protected post');
@@ -49,10 +51,18 @@ export const getPost = async (req, res) => {
                     isPasswordProtected: true 
                 });
             }
+
+            // Verify password
             try {
-                const isMatch = await bcrypt.compare(password, post.password);
-                console.log('Input password:', password);
-                console.log('Stored hash:', post.password);
+                // Ensure both the stored hash and provided password are strings
+                const storedHash = String(post.password);
+                const providedPassword = String(password);
+
+                console.log('About to compare:');
+                console.log('Provided password:', providedPassword);
+                console.log('Stored hash:', storedHash);
+
+                const isMatch = await bcrypt.compare(providedPassword, storedHash);
                 console.log('Password verification result:', isMatch);
 
                 if (!isMatch) {
