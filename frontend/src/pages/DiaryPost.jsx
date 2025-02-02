@@ -13,63 +13,57 @@ const DiaryPost = () => {
     const { user } = useAuthContext();
     const { theme } = useContext(ThemeContext);
 
-    useEffect(() => {
-        const fetchPost = async () => {
-            const headers = {
-                Authorization: `Bearer ${user.token}`,
-            };
-
-            try {
-                const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${id}`, {
-                    method: 'GET', // Use GET to fetch post initially
-                    headers,
-                });
-
-                if (response.ok) {
-                    const json = await response.json();
-                    if (json.password) {
-                        setPasswordRequired(true); // If password exists in post, prompt user
-                    } else {
-                        setPost(json);
-                    }
-                } else {
-                    setError('Post not found.');
-                }
-            } catch (err) {
-                setError('Failed to load post.');
-            }
-        };
-
-        if (user && id) fetchPost();
-    }, [id, user]);
-
-    const handlePasswordSubmit = async (e) => {
-        e.preventDefault();
-
+    const fetchPost = async (passwordAttempt = null) => {
         const headers = {
             Authorization: `Bearer ${user.token}`,
-            'Content-Type': 'application/json',
         };
 
         try {
-            const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${id}`, {
+            const url = new URL(`https://diary-backend-utp0.onrender.com/api/posts/${id}`);
+            if (passwordAttempt) {
+                url.searchParams.append('password', passwordAttempt);
+            }
+
+            const response = await fetch(url, {
                 method: 'GET',
                 headers,
             });
 
-            if (response.ok) {
-                const json = await response.json();
-                setPost(json);
-                setPasswordRequired(false);
-            } else {
-                setError('Incorrect password, please try again.');
+            const json = await response.json();
+
+            if (!response.ok) {
+                if (json.isPasswordProtected) {
+                    setPasswordRequired(true);
+                    setError(json.error);
+                    setPost(null);
+                } else {
+                    setError(json.error);
+                }
+                return;
             }
+
+            setPost(json);
+            setPasswordRequired(false);
+            setError(null);
         } catch (err) {
-            setError('Failed to validate password.');
+            setError('Failed to load post.');
+            setPost(null);
         }
     };
 
-    if (error) {
+    useEffect(() => {
+        if (user && id) {
+            fetchPost();
+        }
+    }, [id, user]);
+
+    const handlePasswordSubmit = async (e) => {
+        e.preventDefault();
+        await fetchPost(password);
+        setPassword(''); // Clear password field after attempt
+    };
+
+    if (error && !passwordRequired) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
                 <Typography color="error">{error}</Typography>
@@ -125,6 +119,8 @@ const DiaryPost = () => {
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            error={!!error}
+                            helperText={error}
                             sx={{
                                 marginBottom: '1rem',
                                 backgroundColor: theme === 'dark' ? '#616161' : 'inherit',
@@ -134,7 +130,6 @@ const DiaryPost = () => {
                             Submit
                         </Button>
                     </form>
-                    {error && <Typography color="error" sx={{ mt: 2 }}>{error}</Typography>}
                 </Paper>
             ) : (
                 <Card

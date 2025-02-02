@@ -16,18 +16,33 @@ export const getAllPosts = async (req, res) => {
 export const getPost = async (req, res) => {
     const { id } = req.params;
     const { password } = req.query;
-    console.log("Password got from:", password);
-
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ error: 'post does not exist' });
-
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: 'Post does not exist' });
+    }
     try {
         const post = await Post.findById(id);
-        if (password){
-            const isMatch = await bcrypt.compare(password, post.password);
-            console.log("Password Match:", isMatch);  // Debug log
-            if (!isMatch) return res.status(403).json({ error: 'incorrect password' });
+        if (!post) {
+            return res.status(404).json({ error: 'Post does not exist' });
         }
-        if (!post) return res.status(404).json({ error: 'post does not exist' });
+        // Check if post is password protected
+        if (post.password) {
+            // If post is password protected but no password provided
+            if (!password) {
+                return res.status(403).json({ 
+                    error: 'Password required', 
+                    isPasswordProtected: true 
+                });
+            }
+            // Verify password
+            const isMatch = await bcrypt.compare(password, post.password);
+            if (!isMatch) {
+                return res.status(403).json({ 
+                    error: 'Incorrect password',
+                    isPasswordProtected: true 
+                });
+            }
+        }
+        // Only return post if password check passed or no password required
         res.status(200).json(post);
     } catch (err) {
         res.status(400).json({ error: err.message });
