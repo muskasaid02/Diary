@@ -12,8 +12,9 @@ const router = express.Router();
 router.use(requireAuth);
 
 router.get('/', getAllPosts);
-router.get('/:id', getPost);
 router.post('/', createPost);
+router.get('/:id', getPost);   // For initial post fetch
+router.post('/:id', getPost);  // For password verification
 router.delete('/:id', deletePost);
 router.patch('/:id', updatePost);
 

@@ -14,11 +14,15 @@ export const getAllPosts = async (req, res) => {
 };
 
 export const getPost = async (req, res) => {
-    console.log('BASIC TEST LOG - getPost called');
+    console.log('\n=== GET/POST POST REQUEST ===');
     const { id } = req.params;
-    const { password } = req.query;
+    const { password } = req.body || {}; // Get password from request body
 
-    console.log('Request params:', { id, password });
+    console.log('Request details:', {
+        id,
+        hasPassword: !!password,
+        method: req.method
+    });
 
     try {
         const post = await Post.findById(id);
@@ -27,12 +31,19 @@ export const getPost = async (req, res) => {
             return res.status(404).json({ error: 'Post does not exist' });
         }
 
-        console.log('Post found:', post._id);
+        console.log('Post found:', {
+            id: post._id,
+            hasStoredPassword: !!post.password
+        });
         
         if (post.password) {
-            console.log('Post is password protected');
-            console.log('Stored hash in database:', post.password);
-            console.log('Attempting to match with password:', password);
+            // Log the exact string values we're comparing
+            console.log('Comparison details:', {
+                providedPassword: password,
+                hashedPasswordLength: post.password.length,
+                providedPasswordType: typeof password,
+                storedHashType: typeof post.password
+            });
             
             if (!password) {
                 return res.status(403).json({ 
@@ -41,18 +52,14 @@ export const getPost = async (req, res) => {
                 });
             }
 
-            // Ensure we're working with strings
-            const storedHash = post.password.toString();
-            const attemptedPassword = password.toString();
-
-            console.log('Types:', {
-                storedHashType: typeof storedHash,
-                attemptedPasswordType: typeof attemptedPassword
-            });
-
             try {
-                const isMatch = await bcrypt.compare(attemptedPassword, storedHash);
-                console.log('Password check result:', isMatch);
+                // Clean up the password and hash before comparison
+                const cleanPassword = password.trim();
+                const storedHash = post.password.trim();
+                
+                console.log('About to compare password');
+                const isMatch = await bcrypt.compare(cleanPassword, storedHash);
+                console.log('Password verification result:', isMatch);
 
                 if (!isMatch) {
                     return res.status(403).json({ 
@@ -61,11 +68,12 @@ export const getPost = async (req, res) => {
                     });
                 }
             } catch (bcryptError) {
-                console.error('bcrypt error:', bcryptError);
-                return res.status(500).json({ error: 'Error comparing passwords' });
+                console.error('Error during password comparison:', bcryptError);
+                return res.status(500).json({ error: 'Error verifying password' });
             }
         }
 
+        console.log('Access granted');
         res.status(200).json(post);
     } catch (err) {
         console.error('Error:', err);

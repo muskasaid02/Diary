@@ -20,17 +20,15 @@ const DiaryPost = () => {
         console.log('Attempting with password:', passwordAttempt);
     
         try {
-            // Construct URL with encoded password if provided
-            const url = new URL(`https://diary-backend-utp0.onrender.com/api/posts/${id}`);
-            if (passwordAttempt) {
-                url.searchParams.append('password', encodeURIComponent(passwordAttempt));
-            }
-    
+            const url = `https://diary-backend-utp0.onrender.com/api/posts/${id}`;
+            
             const response = await fetch(url, {
-                method: 'GET',
+                method: 'POST', // Changed to POST
                 headers: {
-                    'Authorization': `Bearer ${user.token}`
-                }
+                    'Authorization': `Bearer ${user.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: passwordAttempt ? JSON.stringify({ password: passwordAttempt }) : null
             });
     
             const json = await response.json();
