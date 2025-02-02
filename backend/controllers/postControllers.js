@@ -15,36 +15,60 @@ export const getAllPosts = async (req, res) => {
 
 export const getPost = async (req, res) => {
     const { id } = req.params;
-    const { password } = req.query;
+    const { password } = req.query; // Changed back to query params
+
+    console.log('==== GET POST REQUEST ====');
+    console.log('Post ID:', id);
+    console.log('Attempting with password:', password || 'No password provided');
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
+        console.log('Invalid post ID');
         return res.status(404).json({ error: 'Post does not exist' });
     }
+
     try {
         const post = await Post.findById(id);
+        
         if (!post) {
+            console.log('Post not found');
             return res.status(404).json({ error: 'Post does not exist' });
         }
+
+        console.log('Post found');
+        console.log('Post has password:', !!post.password);
+
         // Check if post is password protected
         if (post.password) {
-            // If post is password protected but no password provided
+            console.log('Post is password protected');
+            
+            // If no password provided
             if (!password) {
+                console.log('No password provided for protected post');
                 return res.status(403).json({ 
                     error: 'Password required', 
                     isPasswordProtected: true 
                 });
             }
+
             // Verify password
             const isMatch = await bcrypt.compare(password, post.password);
+            console.log('Password verification result:', isMatch);
+
             if (!isMatch) {
+                console.log('Password verification failed');
                 return res.status(403).json({ 
                     error: 'Incorrect password',
                     isPasswordProtected: true 
                 });
             }
+
+            console.log('Password verified successfully');
         }
-        // Only return post if password check passed or no password required
+
+        console.log('Returning post data');
         res.status(200).json(post);
     } catch (err) {
+        console.error('Error in getPost:', err);
         res.status(400).json({ error: err.message });
     }
 };

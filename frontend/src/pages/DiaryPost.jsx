@@ -1,9 +1,3 @@
-import { useState, useEffect, useContext } from 'react';
-import { useParams } from 'react-router-dom';
-import { useAuthContext } from '../hooks/useAuthContext';
-import { ThemeContext } from '../context/ThemeContext';
-import { Box, Typography, Card, CardContent, Paper, TextField, Button } from '@mui/material';
-
 const DiaryPost = () => {
     const { id } = useParams();
     const [post, setPost] = useState(null);
@@ -12,13 +6,15 @@ const DiaryPost = () => {
     const [error, setError] = useState(null);
     const { user } = useAuthContext();
     const { theme } = useContext(ThemeContext);
+    const [isLoading, setIsLoading] = useState(true);
 
     const fetchPost = async (passwordAttempt = null) => {
-        const headers = {
-            Authorization: `Bearer ${user.token}`,
-        };
+        setIsLoading(true);
+        console.log('Fetching post:', id);
+        console.log('Attempting with password:', passwordAttempt);
 
         try {
+            // Construct URL with password if provided
             const url = new URL(`https://diary-backend-utp0.onrender.com/api/posts/${id}`);
             if (passwordAttempt) {
                 url.searchParams.append('password', passwordAttempt);
@@ -26,52 +22,54 @@ const DiaryPost = () => {
 
             const response = await fetch(url, {
                 method: 'GET',
-                headers,
+                headers: {
+                    'Authorization': `Bearer ${user.token}`
+                }
             });
 
             const json = await response.json();
+            console.log('API Response:', json);
 
             if (!response.ok) {
                 if (json.isPasswordProtected) {
+                    console.log('Post is password protected');
                     setPasswordRequired(true);
-                    setError(json.error);
-                    setPost(null);
+                    if (passwordAttempt) {
+                        setError('Incorrect password');
+                    }
                 } else {
                     setError(json.error);
                 }
-                return;
+                setPost(null);
+            } else {
+                console.log('Post fetched successfully');
+                setPost(json);
+                setPasswordRequired(false);
+                setError(null);
             }
-
-            setPost(json);
-            setPasswordRequired(false);
-            setError(null);
         } catch (err) {
-            setError('Failed to load post.');
-            setPost(null);
+            console.error('Error fetching post:', err);
+            setError('Failed to load post');
+        } finally {
+            setIsLoading(false);
         }
     };
 
+    // Only fetch on initial load
     useEffect(() => {
         if (user && id) {
             fetchPost();
         }
-    }, [id, user]);
+    }, [id, user]); // Don't include fetchPost in dependencies
 
     const handlePasswordSubmit = async (e) => {
         e.preventDefault();
+        console.log('Submitting password:', password);
         await fetchPost(password);
         setPassword(''); // Clear password field after attempt
     };
 
-    if (error && !passwordRequired) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-                <Typography color="error">{error}</Typography>
-            </Box>
-        );
-    }
-
-    if (!post && !passwordRequired) {
+    if (isLoading) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
                 <Typography>Loading...</Typography>
@@ -124,9 +122,20 @@ const DiaryPost = () => {
                             sx={{
                                 marginBottom: '1rem',
                                 backgroundColor: theme === 'dark' ? '#616161' : 'inherit',
+                                '& .MuiInputBase-input': {
+                                    color: theme === 'dark' ? '#fff' : 'inherit',
+                                },
+                                '& .MuiInputLabel-root': {
+                                    color: theme === 'dark' ? '#fff' : 'inherit',
+                                },
                             }}
                         />
-                        <Button type="submit" variant="contained" color="primary" fullWidth>
+                        <Button 
+                            type="submit" 
+                            variant="contained" 
+                            color="primary" 
+                            fullWidth
+                        >
                             Submit
                         </Button>
                     </form>
