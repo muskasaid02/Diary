@@ -1,3 +1,9 @@
+import { useState, useEffect, useContext } from 'react';
+import { useParams } from 'react-router-dom';
+import { useAuthContext } from '../hooks/useAuthContext';
+import { ThemeContext } from '../context/ThemeContext';
+import { Box, Typography, Card, CardContent, Paper, TextField, Button } from '@mui/material';
+
 const DiaryPost = () => {
     const { id } = useParams();
     const [post, setPost] = useState(null);
