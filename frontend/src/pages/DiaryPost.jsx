@@ -14,62 +14,96 @@ const DiaryPost = () => {
     const { theme } = useContext(ThemeContext);
     const [isLoading, setIsLoading] = useState(true);
 
-    const fetchPost = async (passwordAttempt = null) => {
-        setIsLoading(true);
-        console.log('Fetching post:', id);
-        console.log('Attempting with password:', passwordAttempt);
-    
+    // Initial fetch to check if post exists and if it needs a password
+    const checkPost = async () => {
+        console.log('Checking post:', id);
+        
         try {
-            const url = `https://diary-backend-utp0.onrender.com/api/posts/${id}`;
-            
-            const response = await fetch(url, {
-                method: 'POST', // Changed to POST
-                headers: {
-                    'Authorization': `Bearer ${user.token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: passwordAttempt ? JSON.stringify({ password: passwordAttempt }) : null
-            });
-    
+            const response = await fetch(
+                `https://diary-backend-utp0.onrender.com/api/posts/${id}`, 
+                {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${user.token}`
+                    }
+                }
+            );
+
             const json = await response.json();
-            console.log('API Response:', json);
-    
+
             if (!response.ok) {
                 if (json.isPasswordProtected) {
                     console.log('Post is password protected');
                     setPasswordRequired(true);
-                    if (passwordAttempt) {
-                        setError('Incorrect password');
-                    }
+                    setPost(null);
                 } else {
                     setError(json.error);
+                    setPost(null);
                 }
-                setPost(null);
             } else {
                 console.log('Post fetched successfully');
                 setPost(json);
                 setPasswordRequired(false);
-                setError(null);
             }
         } catch (err) {
-            console.error('Error fetching post:', err);
+            console.error('Error checking post:', err);
             setError('Failed to load post');
         } finally {
             setIsLoading(false);
         }
     };
 
-    // Only fetch on initial load
+    // Password verification attempt
+    const verifyPassword = async (attemptedPassword) => {
+        console.log('Attempting password verification');
+        
+        try {
+            const response = await fetch(
+                `https://diary-backend-utp0.onrender.com/api/posts/${id}/verify`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${user.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password: attemptedPassword })
+                }
+            );
+
+            const json = await response.json();
+            console.log('Verification response:', json);
+
+            if (!response.ok) {
+                setError(json.error || 'Incorrect password');
+                return false;
+            }
+
+            setPost(json);
+            setPasswordRequired(false);
+            setError(null);
+            return true;
+        } catch (err) {
+            console.error('Error verifying password:', err);
+            setError('Failed to verify password');
+            return false;
+        }
+    };
+    // Initial load
     useEffect(() => {
         if (user && id) {
-            fetchPost();
+            checkPost();
         }
-    }, [id, user]); // Don't include fetchPost in dependencies
-
+    }, [id, user]);
+    
+    // Handle password submission
     const handlePasswordSubmit = async (e) => {
         e.preventDefault();
-        console.log('Submitting password:', password);
-        await fetchPost(password);
+        console.log('Submitting password attempt');
+        
+        const success = await verifyPassword(password);
+        if (!success) {
+            console.log('Password verification failed');
+        }
         setPassword(''); // Clear password field after attempt
     };
 
