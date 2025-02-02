@@ -17,46 +17,39 @@ const DiaryPost = () => {
     const fetchPost = async (passwordAttempt = null) => {
         setIsLoading(true);
         console.log('Fetching post:', id);
+        console.log('Attempting with password:', passwordAttempt);
     
         try {
-            // Initial GET request to check if post exists and if it's password protected
-            const checkResponse = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${id}/check`, {
-                method: 'GET',
+            const url = `https://diary-backend-utp0.onrender.com/api/posts/${id}`;
+            
+            const response = await fetch(url, {
+                method: 'POST', // Changed to POST
                 headers: {
-                    'Authorization': `Bearer ${user.token}`
-                }
+                    'Authorization': `Bearer ${user.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: passwordAttempt ? JSON.stringify({ password: passwordAttempt }) : null
             });
     
-            const checkJson = await checkResponse.json();
+            const json = await response.json();
+            console.log('API Response:', json);
     
-            if (checkJson.isPasswordProtected && !passwordAttempt) {
-                setPasswordRequired(true);
-                setPost(null);
-                setIsLoading(false);
-                return;
-            }
-    
-            // If password is required and provided, send it in the body like the login system
-            if (passwordAttempt) {
-                const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${id}/verify`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${user.token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ password: passwordAttempt })
-                });
-    
-                const json = await response.json();
-    
-                if (!response.ok) {
-                    setError(json.error || 'Failed to verify password');
-                    setPost(null);
+            if (!response.ok) {
+                if (json.isPasswordProtected) {
+                    console.log('Post is password protected');
+                    setPasswordRequired(true);
+                    if (passwordAttempt) {
+                        setError('Incorrect password');
+                    }
                 } else {
-                    setPost(json);
-                    setPasswordRequired(false);
-                    setError(null);
+                    setError(json.error);
                 }
+                setPost(null);
+            } else {
+                console.log('Post fetched successfully');
+                setPost(json);
+                setPasswordRequired(false);
+                setError(null);
             }
         } catch (err) {
             console.error('Error fetching post:', err);
