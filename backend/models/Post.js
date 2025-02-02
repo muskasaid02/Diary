@@ -27,9 +27,14 @@ const PostSchema = new Schema({
         default: 'neutral'
     },
     password: {
-        type: String,  // Add password field
+        type: String,
         required: false,
-        default: null  // Default value for new documents
+        default: null
+    },
+    location: {
+        type: String,
+        required: false,
+        default: 'Unknown'  // Default value if location is not provided
     }
 }, {
     collection: 'posts',

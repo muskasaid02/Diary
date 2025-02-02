@@ -22,7 +22,7 @@ export const getPost = async (req, res) => {
 
     try {
         const post = await Post.findById(id);
-        if (password){
+        if (password) {
             const isMatch = await bcrypt.compare(password, post.password);
             console.log("Password Match:", isMatch);  // Debug log
             if (!isMatch) return res.status(403).json({ error: 'incorrect password' });
@@ -35,8 +35,11 @@ export const getPost = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
-    const { date, title, content, password, mood} = req.body;
-    console.log("Body", req.body);
+    const { date, title, content, password, mood, location } = req.body;  // Include location
+    
+    // Log the received location to debug
+    console.log("Received location from request:", location); 
+
     const user_id = req.user._id;
 
     try {
@@ -53,6 +56,7 @@ export const createPost = async (req, res) => {
             user_id,
             mood,
             password: hashedPassword,
+            location,  // Save location in the post
         });
 
         res.status(200).json(post);
@@ -70,7 +74,7 @@ export const deletePost = async (req, res) => {
     try {
         const post = await Post.findById(id);
         if (!post) return res.status(404).json({ error: 'post does not exist' });
-        const deletedPost = await Post.findOneAndDelete( { _id: id });
+        const deletedPost = await Post.findOneAndDelete({ _id: id });
         res.status(200).json(deletedPost);
     } catch (err) {
         res.status(400).json({ error: err.message });
@@ -85,7 +89,7 @@ export const updatePost = async (req, res) => {
     try {
         const post = await Post.findById(id);
         if (!post) return res.status(404).json({ error: 'post does not exist' });
-        const updatedPost = await Post.findOneAndUpdate( { _id: id }, { ...req.body });
+        const updatedPost = await Post.findOneAndUpdate({ _id: id }, { ...req.body });
         res.status(200).json(updatedPost);
     } catch (err) {
         res.status(400).json({ error: err.message });
