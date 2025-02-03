@@ -158,6 +158,18 @@ const DiaryPost = () => {
                             variant="body1"
                             dangerouslySetInnerHTML={{ __html: post.content }}
                         />
+
+                        {/* Display the drawing if it exists */}
+                        {post.drawing && (
+                            <Box sx={{ mt: 2, textAlign: 'center' }}>
+                                <Typography variant="h6">Attached Drawing:</Typography>
+                                <img
+                                    src={post.drawing}
+                                    alt="Post Drawing"
+                                    style={{ marginTop: '10px', maxWidth: '100%', borderRadius: '8px' }}
+                                />
+                            </Box>
+                        )}
                     </CardContent>
                 </Card>
             )}

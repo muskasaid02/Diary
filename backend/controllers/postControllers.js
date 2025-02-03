@@ -35,8 +35,7 @@ export const getPost = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
-    const { date, title, content, password, mood} = req.body;
-    console.log("Body", req.body);
+    const { date, title, content, password, mood, drawing } = req.body;  // Destructure drawing
     const user_id = req.user._id;
 
     try {
@@ -53,6 +52,7 @@ export const createPost = async (req, res) => {
             user_id,
             mood,
             password: hashedPassword,
+            drawing  // Include the drawing in the post creation
         });
 
         res.status(200).json(post);
@@ -60,6 +60,7 @@ export const createPost = async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 };
+
 
 
 export const deletePost = async (req, res) => {

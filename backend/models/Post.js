@@ -27,9 +27,14 @@ const PostSchema = new Schema({
         default: 'neutral'
     },
     password: {
-        type: String,  // Add password field
+        type: String,
         required: false,
-        default: null  // Default value for new documents
+        default: null
+    },
+    drawing: {
+        type: String,  // Store the base64 image as a string
+        required: false,
+        default: null
     }
 }, {
     collection: 'posts',
