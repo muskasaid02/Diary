@@ -8,7 +8,7 @@ const MoodCalendar = () => {
     const { posts } = usePostsContext();
 
     const tileContent = ({ date }) => {
-        const entry = posts.find(
+        const entry = posts?.find(
             (post) => new Date(post.date).toDateString() === date.toDateString()
         );
         if (entry) {
@@ -33,6 +33,6 @@ const MoodCalendar = () => {
             />
         </div>
     );
-}; 
+};
 
 export default MoodCalendar;
