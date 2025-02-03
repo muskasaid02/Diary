@@ -8,6 +8,24 @@ import 'react-quill/dist/quill.snow.css';
 import { ThemeContext } from '../context/ThemeContext';
 import GeotagLocation from './GeotagLocation.jsx';
 
+// ReactQuill toolbar options
+const toolbarOptions = {
+    toolbar: [
+        [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+        [{ 'size': [] }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+        ['link', 'image', 'video'],
+        ['clean']
+    ]
+};
+
+const formats = [
+    'header', 'font', 'size',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image', 'video'
+];
 
 const PostForm = () => {
     const { register, handleSubmit, setError, reset, formState: { errors } } = useForm();
@@ -19,50 +37,49 @@ const PostForm = () => {
     const [password, setPassword] = useState('');
     const [location, setLocation] = useState('');
 
-const onSubmit = async (data) => {
-    console.log("Selected location before submission:", location);  // Debug log to confirm location
+    const onSubmit = async (data) => {
+        console.log("Selected location before submission:", location);
 
-    const post = {
-        date: data.date,
-        title: data.title,
-        content: content,
-        mood: mood,
-        password: data.password ? data.password : null,
-        location: location,  // Ensure location is included
-    };
+        const post = {
+            date: data.date,
+            title: data.title,
+            content: content,
+            mood: mood,
+            password: data.password ? data.password : null,
+            location: location,
+        };
 
-    console.log("Submitting post data:", post);  // Confirm the entire payload
+        console.log("Submitting post data:", post);
 
-    try {
-        const response = await fetch('https://diary-backend-utp0.onrender.com/api/posts', {
-            method: 'POST',
-            body: JSON.stringify(post),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${user.token}`,
-            },
-        });
+        try {
+            const response = await fetch('https://diary-backend-utp0.onrender.com/api/posts', {
+                method: 'POST',
+                body: JSON.stringify(post),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`,
+                },
+            });
 
-        const json = await response.json();
-        console.log("Response status:", response.status);  // Check HTTP status code
-        console.log("Server response:", json);  // Check server response body
+            const json = await response.json();
+            console.log("Response status:", response.status);
+            console.log("Server response:", json);
 
-        if (response.ok) {
-            reset({ title: '', date: '', password: '' });
-            setContent('');
-            setMood('neutral');
-            setLocation('');  // Clear location field after successful post
-            dispatch({ type: 'CREATE_POST', payload: json });
-        } else {
-            console.error("Failed to create post:", json);
-            setError('submit', { message: json.error || 'An error occurred.' });
+            if (response.ok) {
+                reset({ title: '', date: '', password: '' });
+                setContent('');
+                setMood('neutral');
+                setLocation('');
+                dispatch({ type: 'CREATE_POST', payload: json });
+            } else {
+                console.error("Failed to create post:", json);
+                setError('submit', { message: json.error || 'An error occurred.' });
+            }
+        } catch (err) {
+            console.error("Error creating post:", err);
+            setError('submit', { message: 'An unexpected error occurred.' });
         }
-    } catch (err) {
-        console.error("Error creating post:", err);
-        setError('submit', { message: 'An unexpected error occurred.' });
-    }
-};
-
+    };
 
     return (
         <Container maxWidth="sm">
@@ -74,7 +91,7 @@ const onSubmit = async (data) => {
                     flexDirection: 'column',
                     gap: 2,
                     width: '400px',
-                    height: '650px',  // Adjusted height for new field
+                    height: '700px',
                     p: 3,
                     boxShadow: theme === 'dark' ? '0px 4px 6px rgba(0, 0, 0, 0.5)' : '0px 2px 4px rgba(0, 0, 0, 0.2)',
                     borderRadius: 2,
@@ -127,6 +144,8 @@ const onSubmit = async (data) => {
                     theme="snow"
                     value={content}
                     onChange={(value) => setContent(value)}
+                    modules={toolbarOptions}
+                    formats={formats}
                     style={{
                         backgroundColor: theme === 'dark' ? '#fff' : '#fff',
                         color: theme === 'dark' ? '#424242' : '#000',

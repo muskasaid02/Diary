@@ -21,14 +21,14 @@ const DiaryPost = () => {
 
             try {
                 const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${id}`, {
-                    method: 'GET', // Use GET to fetch post initially
+                    method: 'GET', 
                     headers,
                 });
 
                 if (response.ok) {
                     const json = await response.json();
                     if (json.password) {
-                        setPasswordRequired(true); // If password exists in post, prompt user
+                        setPasswordRequired(true);
                     } else {
                         setPost(json);
                     }
@@ -52,7 +52,7 @@ const DiaryPost = () => {
         };
 
         try {
-            const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${id}`, {
+            const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${id}?password=${password}`, {
                 method: 'GET',
                 headers,
             });
@@ -153,6 +153,9 @@ const DiaryPost = () => {
                         </Typography>
                         <Typography variant="body2" gutterBottom>
                             {new Date(post.date).toLocaleString()}
+                        </Typography>
+                        <Typography variant="body2" gutterBottom>
+                            Location: {post.location || 'Unknown'}
                         </Typography>
                         <Typography
                             variant="body1"
