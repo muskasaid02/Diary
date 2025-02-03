@@ -16,11 +16,9 @@ const DiaryPost = () => {
 
     // Initial fetch to check if post exists and if it needs a password
     const checkPost = async () => {
-        console.log('Checking post:', id);
-        
         try {
             const response = await fetch(
-                `https://diary-backend-utp0.onrender.com/api/posts/${id}`, 
+                `https://diary-backend-utp0.onrender.com/api/posts/${id}`,
                 {
                     method: 'GET',
                     headers: {
@@ -33,7 +31,6 @@ const DiaryPost = () => {
 
             if (!response.ok) {
                 if (json.isPasswordProtected) {
-                    console.log('Post is password protected');
                     setPasswordRequired(true);
                     setPost(null);
                 } else {
@@ -41,12 +38,10 @@ const DiaryPost = () => {
                     setPost(null);
                 }
             } else {
-                console.log('Post fetched successfully');
                 setPost(json);
                 setPasswordRequired(false);
             }
         } catch (err) {
-            console.error('Error checking post:', err);
             setError('Failed to load post');
         } finally {
             setIsLoading(false);
@@ -54,9 +49,10 @@ const DiaryPost = () => {
     };
 
     // Password verification attempt
-    const verifyPassword = async (attemptedPassword) => {
-        console.log('Attempting password verification');
-        
+    const handlePasswordSubmit = async (e) => {
+        e.preventDefault();
+        setError(null);
+
         try {
             const response = await fetch(
                 `https://diary-backend-utp0.onrender.com/api/posts/${id}/verify`,
@@ -66,46 +62,31 @@ const DiaryPost = () => {
                         'Authorization': `Bearer ${user.token}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ password: attemptedPassword })
+                    body: JSON.stringify({ password })
                 }
             );
 
             const json = await response.json();
-            console.log('Verification response:', json);
 
             if (!response.ok) {
-                setError(json.error || 'Incorrect password');
-                return false;
+                setError(json.error || 'Failed to verify password');
+                return;
             }
 
             setPost(json);
             setPasswordRequired(false);
-            setError(null);
-            return true;
+            setPassword('');
         } catch (err) {
-            console.error('Error verifying password:', err);
-            setError('Failed to verify password');
-            return false;
+            setError('Error verifying password');
         }
     };
+
     // Initial load
     useEffect(() => {
         if (user && id) {
             checkPost();
         }
     }, [id, user]);
-
-    // Handle password submission
-    const handlePasswordSubmit = async (e) => {
-        e.preventDefault();
-        console.log('Submitting password attempt');
-        
-        const success = await verifyPassword(password);
-        if (!success) {
-            console.log('Password verification failed');
-        }
-        setPassword(''); // Clear password field after attempt
-    };
 
     if (isLoading) {
         return (
@@ -134,7 +115,9 @@ const DiaryPost = () => {
                 transition: 'background-color 0.3s ease',
             }}
         >
-            {passwordRequired ? (
+            {isLoading ? (
+                <Typography>Loading...</Typography>
+            ) : passwordRequired ? (
                 <Paper
                     elevation={3}
                     sx={{
@@ -192,14 +175,14 @@ const DiaryPost = () => {
                 >
                     <CardContent>
                         <Typography variant="h5" gutterBottom>
-                            {post.title}
+                            {post?.title}
                         </Typography>
                         <Typography variant="body2" gutterBottom>
-                            {new Date(post.date).toLocaleString()}
+                            {post?.date && new Date(post.date).toLocaleString()}
                         </Typography>
                         <Typography
                             variant="body1"
-                            dangerouslySetInnerHTML={{ __html: post.content }}
+                            dangerouslySetInnerHTML={{ __html: post?.content }}
                         />
                     </CardContent>
                 </Card>
