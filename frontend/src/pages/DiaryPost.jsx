@@ -180,6 +180,9 @@ const DiaryPost = () => {
                         <Typography variant="body2" gutterBottom>
                             {post?.date && new Date(post.date).toLocaleString()}
                         </Typography>
+                        <Typography variant="body2" gutterBottom>
+                            Location: {post.location || 'Unknown'}
+                        </Typography>
                         <Typography
                             variant="body1"
                             dangerouslySetInnerHTML={{ __html: post?.content }}
