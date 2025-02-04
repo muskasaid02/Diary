@@ -94,7 +94,7 @@ const PostForm = () => {
                     flexDirection: 'column',
                     gap: 2,
                     width: '400px',
-                    height: '550px',
+                    height: '700px',
                     p: 3,
                     boxShadow: theme === 'dark' ? '0px 4px 6px rgba(0, 0, 0, 0.5)' : '0px 2px 4px rgba(0, 0, 0, 0.2)',
                     borderRadius: 2,
