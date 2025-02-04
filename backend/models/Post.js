@@ -31,12 +31,6 @@ const PostSchema = new Schema({
         required: false,
         default: null  // Default value for new documents
     }
-    ,
-    location: {
-        type: String,
-        required: false,
-        default: 'Unknown'  // Default value if location is not provided
-    }
 }, {
     collection: 'posts',
     timestamps: true
