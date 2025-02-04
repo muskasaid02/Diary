@@ -24,7 +24,7 @@ const PostHead = ({ post }) => {
 
    const handleClick = async () => {
        const response = await fetch(
-           `https://diary-backend-utp0.onrender.com/api/posts/${post._id}`,
+           `http://localhost:4000/api/posts/${post._id}`,
            {
                method: 'DELETE',
                headers: {
@@ -72,6 +72,12 @@ const PostHead = ({ post }) => {
        fontSize: '0.875rem',
        marginBottom: '1rem',
    };
+
+   const locationStyle = {
+    color: theme === 'dark' ? '#e0e0e0' : '#757575',
+    fontSize: '0.875rem',
+    marginBottom: '1rem',
+};
 
    const contentStyle = {
        color: theme === 'dark' ? '#f5f5f5' : '#212121',
@@ -155,6 +161,10 @@ const PostHead = ({ post }) => {
 
                    <Typography variant="body2" sx={dateStyle}>
                        {format(new Date(post.date), 'MMMM d, y')}
+                   </Typography>
+
+                   <Typography variant="body2" sx={locationStyle}>
+                       Location: {post.location || 'Unknown'}
                    </Typography>
 
                                    {/* Mood Display */}

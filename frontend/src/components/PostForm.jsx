@@ -56,7 +56,7 @@ const PostForm = () => {
     
         console.log("Submitting post:", post);  // Debugging log before sending
         try {
-            const response = await fetch('https://diary-backend-utp0.onrender.com/api/posts', {
+            const response = await fetch('http://localhost:4000/api/posts', {
                 method: 'POST',
                 body: JSON.stringify(post),
                 headers: {
