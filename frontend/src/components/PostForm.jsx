@@ -6,6 +6,7 @@ import { Box, Button, Container, MenuItem, TextField, Typography, Select, InputL
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { ThemeContext } from '../context/ThemeContext';
+import GeotagLocation from './GeotagLocation.jsx';
 
 const PostForm = () => {
     const { register, handleSubmit, setError, reset, formState: { errors } } = useForm();
@@ -15,6 +16,9 @@ const PostForm = () => {
     const [content, setContent] = useState('');
     const [mood, setMood] = useState('');
     const [password, setPassword] = useState('');
+    const [location, setLocation] = useState('');
+    
+    
 
     const editorModules = {
         toolbar: [
@@ -47,6 +51,7 @@ const PostForm = () => {
             content: content,  // Ensure content state is used
             mood:mood,
             password: data.password ? data.password : null,  // Ensure password is included
+            location: location,
         };
     
         console.log("Submitting post:", post);  // Debugging log before sending
@@ -67,6 +72,7 @@ const PostForm = () => {
                 reset({ title: '', date: '', password: '' });
                 setContent('');
                 setMood('neutral');
+                setLocation('');
                 dispatch({ type: 'CREATE_POST', payload: json });
             } else {
                 console.error("Failed to create post:", json);
@@ -163,6 +169,8 @@ const PostForm = () => {
                         <MenuItem value="Neutral">Neutral</MenuItem>
                     </Select>
                 </FormControl>
+
+                <GeotagLocation onLocationSelect={setLocation} />
 
                 <TextField
                     label="Password (Optional)"
