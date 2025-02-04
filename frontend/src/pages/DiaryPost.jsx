@@ -12,78 +12,90 @@ const DiaryPost = () => {
     const [error, setError] = useState(null);
     const { user } = useAuthContext();
     const { theme } = useContext(ThemeContext);
+    const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchPost = async () => {
-            const headers = {
-                Authorization: `Bearer ${user.token}`,
-            };
-
-            try {
-                const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${id}`, {
-                    method: 'GET', // Use GET to fetch post initially
-                    headers,
-                });
-
-                if (response.ok) {
-                    const json = await response.json();
-                    if (json.password) {
-                        setPasswordRequired(true); // If password exists in post, prompt user
-                    } else {
-                        setPost(json);
-                    }
-                } else {
-                    setError('Post not found.');
-                }
-            } catch (err) {
-                setError('Failed to load post.');
-            }
-        };
-
-        if (user && id) fetchPost();
-    }, [id, user]);
-
-    const handlePasswordSubmit = async (e) => {
-        e.preventDefault();
-
-        const headers = {
-            Authorization: `Bearer ${user.token}`,
-            'Content-Type': 'application/json',
-        };
-
+    // Initial fetch to check if post exists and if it needs a password
+    const checkPost = async () => {
         try {
-            const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${id}`, {
-                method: 'GET',
-                headers,
-            });
+            const response = await fetch(
+                `https://diary-backend-utp0.onrender.com/api/posts/${id}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${user.token}`
+                    }
+                }
+            );
 
-            if (response.ok) {
-                const json = await response.json();
+            const json = await response.json();
+
+            if (!response.ok) {
+                if (json.isPasswordProtected) {
+                    setPasswordRequired(true);
+                    setPost(null);
+                } else {
+                    setError(json.error);
+                    setPost(null);
+                }
+            } else {
                 setPost(json);
                 setPasswordRequired(false);
-            } else {
-                setError('Incorrect password, please try again.');
             }
         } catch (err) {
-            setError('Failed to validate password.');
+            setError('Failed to load post');
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    if (error) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-                <Typography color="error">{error}</Typography>
-            </Box>
-        );
-    }
+    // Password verification attempt
+    const handlePasswordSubmit = async (e) => {
+        e.preventDefault();
+        setError(null);
 
-    if (!post && !passwordRequired) {
+        try {
+            const response = await fetch(
+                `https://diary-backend-utp0.onrender.com/api/posts/${id}/verify`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${user.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password })
+                }
+            );
+
+            const json = await response.json();
+
+            if (!response.ok) {
+                setError(json.error || 'Failed to verify password');
+                return;
+            }
+
+            setPost(json);
+            setPasswordRequired(false);
+            setPassword('');
+        } catch (err) {
+            setError('Error verifying password');
+        }
+    };
+
+    // Initial load
+    useEffect(() => {
+        if (user && id) {
+            checkPost();
+        }
+    }, [id, user]);
+
+    if (isLoading) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
                 <Typography>Loading...</Typography>
             </Box>
         );
     }
+
 
     return (
         <Box
@@ -103,7 +115,9 @@ const DiaryPost = () => {
                 transition: 'background-color 0.3s ease',
             }}
         >
-            {passwordRequired ? (
+            {isLoading ? (
+                <Typography>Loading...</Typography>
+            ) : passwordRequired ? (
                 <Paper
                     elevation={3}
                     sx={{
@@ -125,16 +139,28 @@ const DiaryPost = () => {
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            error={!!error}
+                            helperText={error}
                             sx={{
                                 marginBottom: '1rem',
                                 backgroundColor: theme === 'dark' ? '#616161' : 'inherit',
+                                '& .MuiInputBase-input': {
+                                    color: theme === 'dark' ? '#fff' : 'inherit',
+                                },
+                                '& .MuiInputLabel-root': {
+                                    color: theme === 'dark' ? '#fff' : 'inherit',
+                                },
                             }}
                         />
-                        <Button type="submit" variant="contained" color="primary" fullWidth>
+                        <Button 
+                            type="submit" 
+                            variant="contained" 
+                            color="primary" 
+                            fullWidth
+                        >
                             Submit
                         </Button>
                     </form>
-                    {error && <Typography color="error" sx={{ mt: 2 }}>{error}</Typography>}
                 </Paper>
             ) : (
                 <Card
@@ -149,14 +175,14 @@ const DiaryPost = () => {
                 >
                     <CardContent>
                         <Typography variant="h5" gutterBottom>
-                            {post.title}
+                            {post?.title}
                         </Typography>
                         <Typography variant="body2" gutterBottom>
-                            {new Date(post.date).toLocaleString()}
+                            {post?.date && new Date(post.date).toLocaleString()}
                         </Typography>
                         <Typography
                             variant="body1"
-                            dangerouslySetInnerHTML={{ __html: post.content }}
+                            dangerouslySetInnerHTML={{ __html: post?.content }}
                         />
                     </CardContent>
                 </Card>

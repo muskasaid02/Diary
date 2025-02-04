@@ -36,16 +36,6 @@ const PostSchema = new Schema({
     timestamps: true
 });
 
-PostSchema.pre('save', async function (next) {
-    if (this.password && this.isModified('password')) {
-        try {
-            const salt = await bcrypt.genSalt(10);
-            this.password = await bcrypt.hash(this.password, salt);
-        } catch (err) {
-            return next(err);
-        }
-    }
-    next();
-});
+
 
 export default model('Post', PostSchema);
