@@ -73,12 +73,6 @@ const PostHead = ({ post }) => {
        marginBottom: '1rem',
    };
 
-   const locationStyle = {
-    color: theme === 'dark' ? '#e0e0e0' : '#757575',
-    fontSize: '0.875rem',
-    marginBottom: '1rem',
-};
-
    const contentStyle = {
        color: theme === 'dark' ? '#f5f5f5' : '#212121',
        fontSize: '1rem',
@@ -161,10 +155,6 @@ const PostHead = ({ post }) => {
 
                    <Typography variant="body2" sx={dateStyle}>
                        {format(new Date(post.date), 'MMMM d, y')}
-                   </Typography>
-
-                   <Typography variant="body2" sx={locationStyle}>
-                       Location: {post.location || 'Unknown'}
                    </Typography>
 
                                    {/* Mood Display */}
