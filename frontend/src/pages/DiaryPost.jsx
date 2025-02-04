@@ -182,6 +182,7 @@ const DiaryPost = () => {
                         </Typography>
                         <Typography variant="body2" gutterBottom>
                             Location: {post.location || 'Unknown'}
+
                         </Typography>
                         <Typography
                             variant="body1"

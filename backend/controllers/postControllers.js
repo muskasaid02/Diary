@@ -79,6 +79,7 @@ export const getPost = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
+
     const { date, title, content, password, mood, location} = req.body;
     const user_id = req.user._id;
 
@@ -106,6 +107,7 @@ export const createPost = async (req, res) => {
             mood,
             password: hashedPassword,
             location,
+
         });
 
         console.log("Post created with ID:", post._id);
