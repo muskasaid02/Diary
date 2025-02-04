@@ -7,7 +7,7 @@ import { jest } from '@jest/globals';
 process.env.JWT_SECRET = 'test-secret'; //mocked in order to pass tests
 
 describe('Auth Middleware', () => {
-    let mockReq;
+    let mockReq; 
     let mockRes;
     let mockNext;
 

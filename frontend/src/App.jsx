@@ -1,16 +1,17 @@
 import React, { useContext } from 'react';
 import { useRoutes, Navigate } from 'react-router-dom';
 import { useAuthContext } from './hooks/useAuthContext';
-import { ThemeContext } from './context/ThemeContext'; // Import ThemeContext
+import { ThemeContext } from './context/ThemeContext';
 import Layout from './pages/Layout';
 import Home from './pages/Home';
 import DiaryPost from './pages/DiaryPost';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
+import CalendarPage from './pages/Calendar'; // Import the CalendarPage
 
 const App = () => {
     const { user } = useAuthContext();
-    const { theme } = useContext(ThemeContext); // Access theme context (if needed for further functionality)
+    const { theme } = useContext(ThemeContext);
 
     const elements = useRoutes([
         {
@@ -21,6 +22,7 @@ const App = () => {
                 { path: '/api/posts/:id', element: user ? <DiaryPost /> : <Navigate to="/api/login" /> },
                 { path: '/api/signup', element: !user ? <Signup /> : <Navigate to="/" /> },
                 { path: '/api/login', element: !user ? <Login /> : <Navigate to="/" /> },
+                { path: '/calendar', element: user ? <CalendarPage /> : <Navigate to="/api/login" /> }, 
             ],
         },
     ]);

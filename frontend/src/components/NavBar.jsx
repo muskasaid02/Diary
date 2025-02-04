@@ -38,24 +38,44 @@ const NavBar = () => {
                         padding: '0 10px', // Reduce vertical padding
                     }}
                 >
-                    {/* Left: Home Link */}
-                    <Typography
-                        variant="h6"
-                        component="div"
-                        sx={{
-                            fontSize: '1rem',
-                        }}
-                    >
-                        <Link
-                            to="/"
-                            style={{
-                                color: 'white',
-                                textDecoration: 'none',
+                    {/* Left: Home and Calendar Links */}
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Typography
+                            variant="h6"
+                            component="div"
+                            sx={{
+                                fontSize: '1rem',
                             }}
                         >
-                            Home
-                        </Link>
-                    </Typography>
+                            <Link
+                                to="/"
+                                style={{
+                                    color: 'white',
+                                    textDecoration: 'none',
+                                }}
+                            >
+                                Home
+                            </Link>
+                        </Typography>
+                        <Typography
+                            variant="h6"
+                            component="div"
+                            sx={{
+                                fontSize: '1rem',
+                                marginLeft: '20px', // Spacing between Home and Calendar
+                            }}
+                        >
+                            <Link
+                                to="/calendar"
+                                style={{
+                                    color: 'white',
+                                    textDecoration: 'none',
+                                }}
+                            >
+                                Calendar
+                            </Link>
+                        </Typography>
+                    </Box>
 
                     {/* Center: App Title */}
                     <Typography
