@@ -33,7 +33,7 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
         };
 
         try {
-            const response = await fetch(`http://localhost:4000/api/posts/${post._id}`, {
+            const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${post._id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
