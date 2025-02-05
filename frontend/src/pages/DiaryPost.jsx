@@ -20,7 +20,7 @@ const DiaryPost = () => {
             };
 
             try {
-                const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${id}`, {
+                const response = await fetch(`http://localhost:8000/api/posts/${id}`, {
                     method: 'GET', // Use GET to fetch post initially
                     headers,
                 });
@@ -52,7 +52,7 @@ const DiaryPost = () => {
         };
 
         try {
-            const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${id}`, {
+            const response = await fetch(`http://localhost:8000/api/posts/${id}`, {
                 method: 'GET',
                 headers,
             });

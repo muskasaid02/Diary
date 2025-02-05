@@ -11,7 +11,7 @@ export const useSignup = () => {
         setError(null);
 
         try {
-            const response = await fetch('https://diary-backend-utp0.onrender.com/api/user/signup', {
+            const response = await fetch('http://localhost:8000/user/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

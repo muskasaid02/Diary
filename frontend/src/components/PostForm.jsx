@@ -41,22 +41,23 @@ const PostForm = () => {
     ];
 
     const onSubmit = async (data) => {
+        const localDate = new Date(data.date + 'T00:00:00')
         const post = {
-            date: data.date,
+            date: localDate.toISOString(),
             title: data.title,
             content: content,  // Ensure content state is used
-            mood:mood,
+            mood: mood,
             password: data.password ? data.password : null,  // Ensure password is included
         };
     
         console.log("Submitting post:", post);  // Debugging log before sending
         try {
-            const response = await fetch('https://diary-backend-utp0.onrender.com/api/posts', {
+            const response = await fetch('http://localhost:8000/api/posts', {
                 method: 'POST',
                 body: JSON.stringify(post),
                 headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${user.token}`,
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`,
                 },
             });
 

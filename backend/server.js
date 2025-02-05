@@ -8,6 +8,8 @@ import userRoutes from './routes/users.js';
 dotenv.config();
 const port = process.env.PORT;
 
+const default_port = 3000
+
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -19,6 +21,9 @@ app.use((req, res, next) => {
 
 app.use('/api/posts', postRoutes);
 app.use('/api/user', userRoutes);
+
+
+//set a default port
 
 const connectDB = async () => {
     try {
@@ -36,7 +41,7 @@ const connectDB = async () => {
 };
 
 connectDB().then(() => {
-    app.listen(port, () => console.log(`listening on port ${port}`));
+    app.listen((port || default_port), () => console.log(`listening on port ${port}`));
 }).catch(err => console.log(err));
 
 export { app };
