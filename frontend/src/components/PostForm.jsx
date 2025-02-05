@@ -41,8 +41,9 @@ const PostForm = () => {
     ];
 
     const onSubmit = async (data) => {
+        const localDate = new Date(data.date + 'T00:00:00');
         const post = {
-            date: data.date,
+            date: localDate.ISOString(),
             title: data.title,
             content: content,  // Ensure content state is used
             mood:mood,
