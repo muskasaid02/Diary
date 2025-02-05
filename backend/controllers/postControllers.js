@@ -99,7 +99,7 @@ export const createPost = async (req, res) => {
 
         // Create post with single hashed password
         const post = await Post.create({
-            date,
+            date: new Date(date),
             title,
             content,
             user_id,
