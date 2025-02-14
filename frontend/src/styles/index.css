@@ -105,11 +105,11 @@ body.dark-theme {
 /* Calendar container */
 .calendar-container {
     display: flex;
-    justify-content: center; /* Center the calendar horizontally */
-    align-items: center; /* Center the calendar vertically */
-    padding: 20px; /* Add some padding around the calendar */
-    width: 100%; /* Ensure the container takes full width */
-    height: 100vh; /* Make the container take the full viewport height */
+    justify-content: center; 
+    align-items: center; 
+    padding: 20px;
+    width: 100%; 
+    height: 100vh;
 }
 
 /* Calendar itself */
@@ -120,13 +120,13 @@ body.dark-theme {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: white;
-    font-size: 1.2rem; /* Increase font size for better readability */
+    font-size: 1.2rem; 
 }
 
 /* Calendar tiles (individual dates) */
 .react-calendar__tile {
-    padding: 20px; /* Increase padding for larger tiles */
-    height: 80px; /* Increase tile height */
+    padding: 20px; 
+    height: 80px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -137,10 +137,39 @@ body.dark-theme {
     background-color: #1976d2;
     color: white;
     border-radius: 4px;
-    font-size: 1.2rem; /* Increase font size for navigation buttons */
-    padding: 10px; /* Add padding to navigation buttons */
+    font-size: 1.2rem; 
+    padding: 10px; 
 }
 
 .react-calendar__navigation button:hover {
     background-color: #115293;
+} 
+
+@media (max-width: 768px) {
+    .react-calendar {
+        width: 100%; 
+        font-size: 1rem; 
+    }
+    .react-calendar__tile {
+        padding: 10px; 
+        height: 60px; 
+    }
+    .react-calendar__navigation button {
+        font-size: 1rem; 
+        padding: 8px; 
+    }
+}
+
+@media (max-width: 480px) {
+    .react-calendar {
+        font-size: 0.9rem; 
+    }
+    .react-calendar__tile {
+        padding: 5px; 
+        height: 50px; 
+    }
+    .react-calendar__navigation button {
+        font-size: 0.9rem; 
+        padding: 5px; 
+    }
 }
