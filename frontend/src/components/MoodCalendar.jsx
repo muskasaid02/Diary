@@ -29,6 +29,7 @@ const MoodCalendar = () => {
     return (
         <div className="calendar-container">
             <Calendar
+                className = "react-calendar"
                 tileContent={tileContent}
             />
         </div>
