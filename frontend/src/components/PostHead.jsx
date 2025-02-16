@@ -24,7 +24,7 @@ const PostHead = ({ post }) => {
 
    const handleClick = async () => {
        const response = await fetch(
-           `https://diary-frontend-kba8.onrender.com/api/posts/${post._id}`,
+           `https://diary-backend-utp0.onrender.com/api/posts/${post._id}`,
            {
                method: 'DELETE',
                headers: {

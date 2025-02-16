@@ -18,7 +18,7 @@ const DiaryPost = () => {
     const checkPost = async () => {
         try {
             const response = await fetch(
-                `https://diary-frontend-kba8.onrender.com/api/posts/${id}`,
+                `https://diary-backend-utp0.onrender.com/api/posts/${id}`,
                 {
                     method: 'GET',
                     headers: {
@@ -55,7 +55,7 @@ const DiaryPost = () => {
 
         try {
             const response = await fetch(
-                `https://diary-frontend-kba8.onrender.com/api/posts/${id}/verify`,
+                `https://diary-backend-utp0.onrender.com/api/posts/${id}/verify`,
                 {
                     method: 'POST',
                     headers: {
