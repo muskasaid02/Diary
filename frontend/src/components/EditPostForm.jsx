@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePostsContext } from '../hooks/usePostsContext';
 import { useAuthContext } from '../hooks/useAuthContext';
 import {
@@ -18,7 +18,6 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
     const { dispatch } = usePostsContext();
     const { user } = useAuthContext();
     
-
     const [isPasswordVerified, setIsPasswordVerified] = useState(!post.password);
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
@@ -26,6 +25,17 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
     const [title, setTitle] = useState(post.title);
     const [content, setContent] = useState(post.content);
     const [date, setDate] = useState(new Date(post.date).toISOString().split('T')[0]);
+
+    useEffect(() => {
+        if (!open) {
+            setIsPasswordVerified(!post.password);
+            setPassword('');
+            setPasswordError('');
+            setTitle(post.title);
+            setContent(post.content);
+            setDate(new Date(post.date).toISOString().split('T')[0]);
+        }
+    }, [open, post]);
 
 
     const handlePasswordVerify = async (e) => {
