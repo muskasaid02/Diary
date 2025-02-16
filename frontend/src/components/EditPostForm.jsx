@@ -45,7 +45,8 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
             const json = await response.json();
 
             if (response.ok) {
-                dispatch({ type: 'UPDATE_POST', payload: json });
+                const completeUpdatedPost = { ...post, ...updatedPost, _id: post._id };
+                dispatch({ type: 'UPDATE_POST', payload: completeUpdatedPost });
                 onClose();
             } else {
                 console.error('Failed to update post:', json);
