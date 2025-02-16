@@ -52,10 +52,9 @@ const Home = () => {
 
     const toggleFilter = () => {
         setIsTagFilterActive(!isTagFilterActive);
-        if (!isTagFilterActive && selectedTags.length === 0) {
-            if (allTags.length > 0) {
-                setSelectedTags([allTags[0]]);
-            }
+       
+        if (isTagFilterActive) {
+            setSelectedTags([]);
         }
     };
 
@@ -111,38 +110,46 @@ const Home = () => {
                             mb: 2, 
                             display: 'flex', 
                             alignItems: 'center', 
-                            gap: 1,
+                            gap: 2,
                             flexWrap: 'wrap'
                         }}>
                             <Button
+                                onClick={toggleFilter}
+                                variant="outlined"
                                 sx={{
-                                    minWidth: 'auto',
-                                    width: '24px',
-                                    height: '24px',
-                                    borderRadius: '50%',
-                                    p: 0,
+                                    height: '32px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 1,
                                     backgroundColor: isTagFilterActive ? '#1976d2' : 'transparent',
-                                    border: '1px solid #1976d2',
+                                    color: isTagFilterActive ? 'white' : '#1976d2',
                                     '&:hover': {
                                         backgroundColor: isTagFilterActive ? '#1565c0' : 'rgba(25, 118, 210, 0.04)',
                                     }
                                 }}
-                                onClick={toggleFilter}
-                            />
-                            {allTags.map(tag => (
-                                <Chip
-                                    key={tag}
-                                    label={tag}
-                                    onClick={() => handleTagClick(tag)}
-                                    color={selectedTags.includes(tag) ? "primary" : "default"}
-                                    sx={{
-                                        opacity: isTagFilterActive ? 1 : 0.7,
-                                        transition: 'opacity 0.3s ease'
-                                    }}
-                                />
-                            ))}
+                            >
+                                <span style={{ fontSize: '0.875rem' }}>
+                                    {isTagFilterActive ? 'Filters On' : 'Filters Off'}
+                                </span>
+                            </Button>
+                            
+                            <Box sx={{ 
+                                display: 'flex', 
+                                flexWrap: 'wrap', 
+                                gap: 1,
+                                opacity: isTagFilterActive ? 1 : 0.7,
+                                transition: 'opacity 0.3s ease'
+                            }}>
+                                {allTags.map(tag => (
+                                    <Chip
+                                        key={tag}
+                                        label={tag}
+                                        onClick={() => handleTagClick(tag)}
+                                        color={selectedTags.includes(tag) ? "primary" : "default"}
+                                    />
+                                ))}
+                            </Box>
                         </Box>
-
 
                         <Grid container spacing={2}>
                             {filteredPosts.map(post => (
