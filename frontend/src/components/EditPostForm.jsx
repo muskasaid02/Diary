@@ -8,27 +8,63 @@ import {
     DialogActions,
     Button,
     TextField,
-    Box
+    Box,
+    Typography
 } from '@mui/material';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // Include Quill styles
+import 'react-quill/dist/quill.snow.css';
 
 const EditPostForm = ({ post, open, onClose, theme }) => {
     const { dispatch } = usePostsContext();
     const { user } = useAuthContext();
     
-    // State variables for post fields
+
+    const [isPasswordVerified, setIsPasswordVerified] = useState(!post.password);
+    const [password, setPassword] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+
     const [title, setTitle] = useState(post.title);
-    const [content, setContent] = useState(post.content); // Save HTML directly
+    const [content, setContent] = useState(post.content);
     const [date, setDate] = useState(new Date(post.date).toISOString().split('T')[0]);
 
-    // Handle form submission to update the post
+
+    const handlePasswordVerify = async (e) => {
+        e.preventDefault();
+        setPasswordError('');
+
+        try {
+            const response = await fetch(
+                `http://localhost:4000/api/posts/${post._id}/verify`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${user.token}`
+                    },
+                    body: JSON.stringify({ password })
+                }
+            );
+
+            const json = await response.json();
+
+            if (response.ok) {
+                setIsPasswordVerified(true);
+                setPassword('');
+            } else {
+                setPasswordError(json.error || 'Incorrect password');
+            }
+        } catch (error) {
+            setPasswordError('Error verifying password');
+        }
+    };
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const updatedPost = {
             title,
-            content, // Save HTML content directly
+            content,
             date,
         };
 
@@ -45,7 +81,10 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
             const json = await response.json();
 
             if (response.ok) {
-                const completeUpdatedPost = { ...post, ...updatedPost, _id: post._id };
+                const completeUpdatedPost = {
+                    ...post,
+                    ...updatedPost,
+                };
                 dispatch({ type: 'UPDATE_POST', payload: completeUpdatedPost });
                 onClose();
             } else {
@@ -55,6 +94,56 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
             console.error('Error updating post:', error);
         }
     };
+
+
+    if (!isPasswordVerified) {
+        return (
+            <Dialog 
+                open={open} 
+                onClose={onClose}
+                PaperProps={{
+                    sx: {
+                        backgroundColor: theme === 'dark' ? '#424242' : '#fff',
+                        color: theme === 'dark' ? '#fff' : '#000',
+                    }
+                }}
+            >
+                <DialogTitle>Password Required</DialogTitle>
+                <DialogContent>
+                    <Typography variant="body1" sx={{ mb: 2 }}>
+                        This post is password protected. Please enter the password to edit.
+                    </Typography>
+                    <form onSubmit={handlePasswordVerify}>
+                        <TextField
+                            type="password"
+                            label="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            error={!!passwordError}
+                            helperText={passwordError}
+                            fullWidth
+                            sx={{
+                                '& .MuiInputBase-input': {
+                                    color: theme === 'dark' ? '#fff' : '#000',
+                                },
+                                '& .MuiInputLabel-root': {
+                                    color: theme === 'dark' ? '#fff' : '#000',
+                                },
+                            }}
+                        />
+                        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+                            <Button onClick={onClose} color="secondary">
+                                Cancel
+                            </Button>
+                            <Button type="submit" variant="contained" color="primary">
+                                Verify
+                            </Button>
+                        </Box>
+                    </form>
+                </DialogContent>
+            </Dialog>
+        );
+    }
 
     return (
         <Dialog 
@@ -72,7 +161,6 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
             <DialogTitle>Edit Post</DialogTitle>
             <DialogContent>
                 <Box component="form" sx={{ mt: 2 }}>
-                    {/* Title Field */}
                     <TextField
                         fullWidth
                         label="Title"
@@ -89,7 +177,6 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
                         }}
                     />
 
-                    {/* Date Field */}
                     <TextField
                         type="date"
                         fullWidth
@@ -108,39 +195,18 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
                         }}
                     />
 
-                    {/* Content Editor (ReactQuill) */}
                     <ReactQuill
                         theme="snow"
                         value={content}
-                        onChange={(value) => setContent(value)} // Save HTML content directly
+                        onChange={(value) => setContent(value)}
                         style={{
-                            backgroundColor: '#fff', // Always white background
-                            color: theme === 'dark' ? '#000' : '#000', // Black text for readability
-                            border: theme === 'dark' ? '1px solid #6c757d' : '1px solid #ccc', // Match border style
-                            borderRadius: '4px', // Same border radius as TextField
-                            minHeight: '150px', // Ensure a consistent height
-                            padding: '10px', // Add padding for readability
+                            backgroundColor: '#fff',
+                            color: theme === 'dark' ? '#000' : '#000',
+                            border: theme === 'dark' ? '1px solid #6c757d' : '1px solid #ccc',
+                            borderRadius: '4px',
+                            minHeight: '150px',
+                            padding: '10px',
                         }}
-                        modules={{
-                            toolbar: [
-                                [{ header: '1' }, { header: '2' }, { font: [] }],
-                                [{ list: 'ordered' }, { list: 'bullet' }],
-                                ['bold', 'italic', 'underline', 'strike'],
-                                ['link', 'image'],
-                                ['clean'],
-                            ],
-                        }}
-                        formats={[
-                            'header',
-                            'font',
-                            'list',
-                            'bold',
-                            'italic',
-                            'underline',
-                            'strike',
-                            'link',
-                            'image',
-                        ]}
                     />
                 </Box>
             </DialogContent>
