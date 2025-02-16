@@ -32,8 +32,9 @@ const PostSchema = new Schema({
         default: null  // Default value for new documents
     },
     tags: {
-        type: [String],
-        default: []
+        type: String,
+        required: false,
+        default: null
     }
 }, {
     collection: 'posts',

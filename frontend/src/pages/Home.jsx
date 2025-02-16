@@ -3,13 +3,16 @@ import { usePostsContext } from '../hooks/usePostsContext.js';
 import { useAuthContext } from '../hooks/useAuthContext.js';
 import PostHead from '../components/PostHead';
 import PostForm from '../components/PostForm';
-import { Grid, Box, Typography, CircularProgress, Container } from '@mui/material';
+import { Grid, Box, Typography, CircularProgress, Container, Chip } from '@mui/material';
 import { ThemeContext } from '../context/ThemeContext';
+import { useState } from 'react';
+
 
 const Home = () => {
     const { posts, dispatch } = usePostsContext();
     const { user } = useAuthContext();
     const { theme } = useContext(ThemeContext); // Access theme context
+    const [selectedTags, setSelectedTags] = useState([]);
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -47,6 +50,10 @@ const Home = () => {
         );
     }
 
+    const filteredPosts = posts.filter(post =>
+        selectedTags.length === 0 || post.tags?.some(tag => selectedTags.includes(tag))
+    );
+
     return (
         <Box
             sx={{
@@ -75,8 +82,23 @@ const Home = () => {
                         >
                             Posts
                         </Typography>
+
+                        <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                            {Array.from(new Set(posts.flatMap(post => post.tags))).map(tag => (
+                                <Chip
+                                    key={tag}
+                                    label={tag}
+                                    onClick={() => setSelectedTags(prev => 
+                                        prev.includes(tag) 
+                                            ? prev.filter(t => t !== tag)
+                                            : [...prev, tag]
+                                    )}
+                                    color={selectedTags.includes(tag) ? "primary" : "default"}
+                                />
+                            ))}
+                        </Box>
                         <Grid container spacing={2}>
-                            {posts.map(post => (
+                            {filteredPosts.map(post => (
                                 <Grid item xs={12} sm={6} key={post._id}>
                                     <PostHead post={post} />
                                 </Grid>

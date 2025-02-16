@@ -43,7 +43,8 @@ const PostForm = () => {
     ];
 
     const onSubmit = async (data) => {
-        const localDate = new Date(data.date + 'T00:00:00');
+        const localDate = new Date(data.date + 'T08:00:00');
+        console.log("Tags before submission:", tags);  // Debugging log for tags
         const post = {
             date: localDate.toISOString(),
             title: data.title,
@@ -53,7 +54,7 @@ const PostForm = () => {
             tags: tags,  // Ensure tags are included
         };
     
-        console.log("Submitting post:", post);  // Debugging log before sending
+        console.log("Full post data:", post);  // Debugging log before sending
         try {
             const response = await fetch('http://localhost:4000/api/posts', {
                 method: 'POST',
@@ -66,7 +67,7 @@ const PostForm = () => {
 
             const json = await response.json();
             console.log("Response:", response); 
-            console.log("Server response:", json);  // Debugging response from server
+            console.log("Complete server response:", json);  // Debugging response from server
             if (response.ok) {
                 reset({ title: '', date: '', password: '' });
                 setContent('');
@@ -92,7 +93,7 @@ const PostForm = () => {
                     flexDirection: 'column',
                     gap: 2,
                     width: '400px',
-                    height: '550px',
+                    height: '720px',
                     p: 3,
                     boxShadow: theme === 'dark' ? '0px 4px 6px rgba(0, 0, 0, 0.5)' : '0px 2px 4px rgba(0, 0, 0, 0.2)',
                     borderRadius: 2,
