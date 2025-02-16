@@ -44,14 +44,14 @@ const PostForm = () => {
 
     const onSubmit = async (data) => {
         const localDate = new Date(data.date + 'T08:00:00');
-        console.log("Tags before submission:", tags);  // Debugging log for tags
+        console.log("Tags before submission:", tags);  
         const post = {
             date: localDate.toISOString(),
             title: data.title,
             content: content,  // Ensure content state is used
             mood:mood,
             password: data.password ? data.password : null,  // Ensure password is included
-            tags: tags,  // Ensure tags are included
+            tags: tags,  
         };
     
         console.log("Full post data:", post);  // Debugging log before sending

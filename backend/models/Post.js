@@ -33,7 +33,7 @@ const PostSchema = new Schema({
     },
     tags: {
         type: [String],
-        default: null
+        default: []
     }
 }, {
     collection: 'posts',

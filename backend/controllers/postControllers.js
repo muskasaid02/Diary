@@ -105,7 +105,7 @@ export const createPost = async (req, res) => {
             user_id,
             mood,
             password: hashedPassword,
-            tags: tags ? tags : null
+            tags: tags ? tags : []
         });
 
         console.log("Post created with ID:", post._id);
