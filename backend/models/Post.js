@@ -32,8 +32,7 @@ const PostSchema = new Schema({
         default: null  // Default value for new documents
     },
     tags: {
-        type: String,
-        required: false,
+        type: [String],
         default: null
     }
 }, {

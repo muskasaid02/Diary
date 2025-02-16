@@ -3,7 +3,7 @@ import { usePostsContext } from '../hooks/usePostsContext.js';
 import { useAuthContext } from '../hooks/useAuthContext.js';
 import PostHead from '../components/PostHead';
 import PostForm from '../components/PostForm';
-import { Grid, Box, Typography, CircularProgress, Container, Chip } from '@mui/material';
+import { Grid, Box, Typography, CircularProgress, Container, Chip, Button} from '@mui/material';
 import { ThemeContext } from '../context/ThemeContext';
 import { useState } from 'react';
 
@@ -13,6 +13,7 @@ const Home = () => {
     const { user } = useAuthContext();
     const { theme } = useContext(ThemeContext); // Access theme context
     const [selectedTags, setSelectedTags] = useState([]);
+    const [isTagFilterActive, setIsTagFilterActive] = useState(false);
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -50,9 +51,13 @@ const Home = () => {
         );
     }
 
-    const filteredPosts = posts.filter(post =>
-        selectedTags.length === 0 || post.tags?.some(tag => selectedTags.includes(tag))
-    );
+    const filteredPosts = posts.filter(post => {
+        console.log("Post being filtered:", post); 
+        console.log("Current tags for post:", post.tags); 
+        if (!isTagFilterActive) return true;
+        return selectedTags.length === 0 || 
+               (post.tags && post.tags.some(tag => selectedTags.includes(tag)));
+    });
 
     return (
         <Box
@@ -83,13 +88,33 @@ const Home = () => {
                             Posts
                         </Typography>
 
-                        <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                            {Array.from(new Set(posts.flatMap(post => post.tags))).map(tag => (
+                        <Box sx={{ 
+                            mb: 2, 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: 1 
+                        }}>
+                            <Button
+                                sx={{
+                                    minWidth: 'auto',
+                                    width: '24px',
+                                    height: '24px',
+                                    borderRadius: '50%',
+                                    p: 0,
+                                    backgroundColor: isTagFilterActive ? '#1976d2' : 'transparent',
+                                    border: '1px solid #1976d2',
+                                    '&:hover': {
+                                        backgroundColor: isTagFilterActive ? '#1565c0' : 'rgba(25, 118, 210, 0.04)',
+                                    }
+                                }}
+                                onClick={() => setIsTagFilterActive(!isTagFilterActive)}
+                            />
+                            {Array.from(new Set(posts.flatMap(post => post.tags || []))).map(tag => (
                                 <Chip
                                     key={tag}
                                     label={tag}
-                                    onClick={() => setSelectedTags(prev => 
-                                        prev.includes(tag) 
+                                    onClick={() => setSelectedTags(prev =>
+                                        prev.includes(tag)
                                             ? prev.filter(t => t !== tag)
                                             : [...prev, tag]
                                     )}
@@ -106,7 +131,6 @@ const Home = () => {
                         </Grid>
                     </Grid>
 
-                    {/* Form Section */}
                     <Grid item xs={12} md={4}>
                         <Typography
                             variant="h4"
