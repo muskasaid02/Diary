@@ -6,6 +6,7 @@ import { Box, Button, Container, MenuItem, TextField, Typography, Select, InputL
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { ThemeContext } from '../context/ThemeContext';
+import TagsInput from './TagsInput';
 
 const PostForm = () => {
     const { register, handleSubmit, setError, reset, formState: { errors } } = useForm();
@@ -15,6 +16,7 @@ const PostForm = () => {
     const [content, setContent] = useState('');
     const [mood, setMood] = useState('');
     const [password, setPassword] = useState('');
+    const [tags, setTags] = useState([]);
 
     const editorModules = {
         toolbar: [
@@ -48,6 +50,7 @@ const PostForm = () => {
             content: content,  // Ensure content state is used
             mood:mood,
             password: data.password ? data.password : null,  // Ensure password is included
+            tags: tags,  // Ensure tags are included
         };
     
         console.log("Submitting post:", post);  // Debugging log before sending
@@ -176,6 +179,7 @@ const PostForm = () => {
                     helperText="Add a password to protect your post (optional)"
                 />
 
+                <TagsInput tags={tags} setTags={setTags} theme={theme} />
                 {errors.submit && (
                     <Typography variant="body2" color="error" align="center">
                         {errors.submit.message}
