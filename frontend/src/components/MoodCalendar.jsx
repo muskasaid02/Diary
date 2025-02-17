@@ -1,14 +1,11 @@
-import React, { useContext } from 'react';
+
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { moodColors } from '../constants/moodColors';
 import { usePostsContext } from '../hooks/usePostsContext';
-import { ThemeContext } from '../context/ThemeContext';
-import '../styles/index.css';
 
 const MoodCalendar = () => {
     const { posts } = usePostsContext();
-    const { theme } = useContext(ThemeContext);
 
     const tileContent = ({ date }) => {
         const entry = posts?.find(
@@ -30,9 +27,8 @@ const MoodCalendar = () => {
     };
 
     return (
-        <div className="calendar-container ${theme}" > 
+        <div className="calendar-container">
             <Calendar
-                className = "react-calendar"
                 tileContent={tileContent}
             />
         </div>

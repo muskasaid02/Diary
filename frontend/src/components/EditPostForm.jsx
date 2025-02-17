@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePostsContext } from '../hooks/usePostsContext';
 import { useAuthContext } from '../hooks/useAuthContext';
 import {
@@ -8,7 +8,8 @@ import {
     DialogActions,
     Button,
     TextField,
-    Box
+    Box,
+    
 } from '@mui/material';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Include Quill styles
@@ -22,8 +23,6 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
     const [content, setContent] = useState(post.content); // Save HTML directly
     const [date, setDate] = useState(new Date(post.date).toISOString().split('T')[0]);
 
-<<<<<<< HEAD
-=======
     // useEffect(() => {
     //     if (!open) {
     //         setIsPasswordVerified(!post.password);
@@ -36,7 +35,6 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
     // }, [open, post]);
 
 
->>>>>>> 0a3d711 (Calendar working as it should be)
     // Handle form submission to update the post
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -48,7 +46,7 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
         };
 
         try {
-            const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${post._id}`, {
+            const response = await fetch(`http://localhost:4000/api/posts/${post._id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -60,7 +58,8 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
             const json = await response.json();
 
             if (response.ok) {
-                dispatch({ type: 'UPDATE_POST', payload: json });
+                const completeUpdatedPost = {...post, ...updatedPost, _id: post._id };
+                dispatch({ type: 'UPDATE_POST', payload: completeUpdatedPost });
                 onClose();
             } else {
                 console.error('Failed to update post:', json);
