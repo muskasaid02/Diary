@@ -6,6 +6,7 @@ import { Box, Button, Container, MenuItem, TextField, Typography, Select, InputL
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { ThemeContext } from '../context/ThemeContext';
+import TagsInput from './TagsInput';
 
 const PostForm = () => {
     const { register, handleSubmit, setError, reset, formState: { errors } } = useForm();
@@ -15,6 +16,7 @@ const PostForm = () => {
     const [content, setContent] = useState('');
     const [mood, setMood] = useState('');
     const [password, setPassword] = useState('');
+    const [tags, setTags] = useState([]);
 
     const editorModules = {
         toolbar: [
@@ -41,18 +43,20 @@ const PostForm = () => {
     ];
 
     const onSubmit = async (data) => {
-        const localDate = new Date(data.date + 'T00:00:00');
+        const localDate = new Date(data.date + 'T08:00:00');
+        console.log("Tags before submission:", tags);  
         const post = {
-            date: localDate.ISOString(),
+            date: localDate.toISOString(),
             title: data.title,
             content: content,  // Ensure content state is used
             mood:mood,
             password: data.password ? data.password : null,  // Ensure password is included
+            tags: tags,  
         };
     
-        console.log("Submitting post:", post);  // Debugging log before sending
+        console.log("Full post data:", post);  // Debugging log before sending
         try {
-            const response = await fetch('https://diary-backend-utp0.onrender.com/api/posts', {
+            const response = await fetch('http://localhost:4000/api/posts', {
                 method: 'POST',
                 body: JSON.stringify(post),
                 headers: {
@@ -63,7 +67,7 @@ const PostForm = () => {
 
             const json = await response.json();
             console.log("Response:", response); 
-            console.log("Server response:", json);  // Debugging response from server
+            console.log("Complete server response:", json);  // Debugging response from server
             if (response.ok) {
                 reset({ title: '', date: '', password: '' });
                 setContent('');
@@ -89,7 +93,7 @@ const PostForm = () => {
                     flexDirection: 'column',
                     gap: 2,
                     width: '400px',
-                    height: '550px',
+                    height: '720px',
                     p: 3,
                     boxShadow: theme === 'dark' ? '0px 4px 6px rgba(0, 0, 0, 0.5)' : '0px 2px 4px rgba(0, 0, 0, 0.2)',
                     borderRadius: 2,
@@ -176,6 +180,7 @@ const PostForm = () => {
                     helperText="Add a password to protect your post (optional)"
                 />
 
+                <TagsInput tags={tags} setTags={setTags} theme={theme} />
                 {errors.submit && (
                     <Typography variant="body2" color="error" align="center">
                         {errors.submit.message}
