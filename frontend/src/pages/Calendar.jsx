@@ -1,5 +1,5 @@
-import React from "react";
 
+import React, { useContext } from 'react';
 import MoodCalendar from "../components/MoodCalendar";
 import { ThemeContext } from "../context/ThemeContext";
 import { Box, Typography } from "@mui/material";

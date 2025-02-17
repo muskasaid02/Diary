@@ -22,16 +22,16 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
     const [content, setContent] = useState(post.content); // Save HTML directly
     const [date, setDate] = useState(new Date(post.date).toISOString().split('T')[0]);
 
-    useEffect(() => {
-        if (!open) {
-            setIsPasswordVerified(!post.password);
-            setPassword('');
-            setPasswordError('');
-            setTitle(post.title);
-            setContent(post.content);
-            setDate(new Date(post.date).toISOString().split('T')[0]);
-        }
-    }, [open, post]);
+    // useEffect(() => {
+    //     if (!open) {
+    //         setIsPasswordVerified(!post.password);
+    //         setPassword('');
+    //         setPasswordError('');
+    //         setTitle(post.title);
+    //         setContent(post.content);
+    //         setDate(new Date(post.date).toISOString().split('T')[0]);
+    //     }
+    // }, [open, post]);
 
 
     // Handle form submission to update the post
