@@ -22,6 +22,21 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
     const [content, setContent] = useState(post.content); // Save HTML directly
     const [date, setDate] = useState(new Date(post.date).toISOString().split('T')[0]);
 
+<<<<<<< HEAD
+=======
+    // useEffect(() => {
+    //     if (!open) {
+    //         setIsPasswordVerified(!post.password);
+    //         setPassword('');
+    //         setPasswordError('');
+    //         setTitle(post.title);
+    //         setContent(post.content);
+    //         setDate(new Date(post.date).toISOString().split('T')[0]);
+    //     }
+    // }, [open, post]);
+
+
+>>>>>>> 0a3d711 (Calendar working as it should be)
     // Handle form submission to update the post
     const handleSubmit = async (e) => {
         e.preventDefault();

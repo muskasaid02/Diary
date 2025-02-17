@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useContext } from 'react';
 import MoodCalendar from "../components/MoodCalendar";
 
 const CalendarPage = () => {
