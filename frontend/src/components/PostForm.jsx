@@ -43,7 +43,7 @@ const PostForm = () => {
     const onSubmit = async (data) => {
         const localDate = new Date(data.date + 'T00:00:00');
         const post = {
-            date: localDate.ISOString(),
+            date: localDate,
             title: data.title,
             content: content,  // Ensure content state is used
             mood:mood,
@@ -52,7 +52,7 @@ const PostForm = () => {
     
         console.log("Submitting post:", post);  // Debugging log before sending
         try {
-            const response = await fetch('https://diary-backend-utp0.onrender.com/api/posts', {
+            const response = await fetch('http://localhost:4000/api/posts', {
                 method: 'POST',
                 body: JSON.stringify(post),
                 headers: {

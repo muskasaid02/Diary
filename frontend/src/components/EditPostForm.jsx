@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePostsContext } from '../hooks/usePostsContext';
 import { useAuthContext } from '../hooks/useAuthContext';
 import {
@@ -22,6 +22,18 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
     const [content, setContent] = useState(post.content); // Save HTML directly
     const [date, setDate] = useState(new Date(post.date).toISOString().split('T')[0]);
 
+    useEffect(() => {
+        if (!open) {
+            setIsPasswordVerified(!post.password);
+            setPassword('');
+            setPasswordError('');
+            setTitle(post.title);
+            setContent(post.content);
+            setDate(new Date(post.date).toISOString().split('T')[0]);
+        }
+    }, [open, post]);
+
+
     // Handle form submission to update the post
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -33,7 +45,7 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
         };
 
         try {
-            const response = await fetch(`https://diary-backend-utp0.onrender.com/api/posts/${post._id}`, {
+            const response = await fetch(`http://localhost:4000/api/posts/${post._id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -45,7 +57,8 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
             const json = await response.json();
 
             if (response.ok) {
-                dispatch({ type: 'UPDATE_POST', payload: json });
+                const completeUpdatedPost = {...post, ...updatedPost, _id: post._id };
+                dispatch({ type: 'UPDATE_POST', payload: completeUpdatedPost });
                 onClose();
             } else {
                 console.error('Failed to update post:', json);
