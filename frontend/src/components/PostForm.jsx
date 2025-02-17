@@ -7,6 +7,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { ThemeContext } from '../context/ThemeContext';
 import WritingPrompts from './WritingPrompts';
+import TagsInput from './TagsInput';
 
 const PostForm = () => {
     const { register, handleSubmit, setError, reset, formState: { errors } } = useForm();
@@ -17,6 +18,7 @@ const PostForm = () => {
     const [mood, setMood] = useState('');
     const [password, setPassword] = useState('');
     const [currentPrompt, setCurrentPrompt] = useState('');
+    const [tags, setTags] = useState([]);
 
     const editorModules = {
         toolbar: [
@@ -47,17 +49,20 @@ const PostForm = () => {
     };
 
     const onSubmit = async (data) => {
-        const localDate = new Date(data.date + 'T00:00:00');
+        const localDate = new Date(data.date + 'T08:00:00');
+        console.log("Tags before submission:", tags);  
         const post = {
             date: localDate.toISOString(),
             title: data.title,
             content: content,
             mood: mood,
             password: data.password ? data.password : null,
+            tags: tags,
         };
     
+        console.log("Full post data:", post);
         try {
-            const response = await fetch('https://diary-backend-utp0.onrender.com/api/posts', {
+            const response = await fetch('http://localhost:4000/api/posts', {
                 method: 'POST',
                 body: JSON.stringify(post),
                 headers: {
@@ -65,9 +70,7 @@ const PostForm = () => {
                     'Authorization': `Bearer ${user.token}`,
                 },
             });
-
             const json = await response.json();
-            
             if (response.ok) {
                 reset({ title: '', date: '', password: '' });
                 setContent('');
@@ -85,7 +88,7 @@ const PostForm = () => {
     return (
         <Box 
             sx={{
-                maxHeight: 'calc(100vh - 100px)', // Account for navbar and padding
+                maxHeight: 'calc(100vh - 100px)',
                 overflowY: 'auto',
                 paddingBottom: '20px',
                 '&::-webkit-scrollbar': {
@@ -124,7 +127,7 @@ const PostForm = () => {
                     </Typography>
 
                     <WritingPrompts onSelectPrompt={handlePromptSelect} />
-
+                    
                     {currentPrompt && (
                         <Alert 
                             severity="info" 
@@ -214,6 +217,8 @@ const PostForm = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         helperText="Add a password to protect your post (optional)"
                     />
+
+                    <TagsInput tags={tags} setTags={setTags} theme={theme} />
 
                     {errors.submit && (
                         <Typography variant="body2" color="error" align="center">
