@@ -8,6 +8,7 @@ import DiaryPost from './pages/DiaryPost';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import CalendarPage from './pages/Calendar'; // Import the CalendarPage
+import Profile from './pages/Profile';
 
 const App = () => {
     const { user } = useAuthContext();
@@ -22,7 +23,8 @@ const App = () => {
                 { path: '/api/posts/:id', element: user ? <DiaryPost /> : <Navigate to="/api/login" /> },
                 { path: '/api/signup', element: !user ? <Signup /> : <Navigate to="/" /> },
                 { path: '/api/login', element: !user ? <Login /> : <Navigate to="/" /> },
-                { path: '/calendar', element: user ? <CalendarPage /> : <Navigate to="/api/login" /> }, 
+                { path: '/calendar', element: user ? <CalendarPage /> : <Navigate to="/api/login" /> },
+                { path: '/profile', element: user ? <Profile /> : <Navigate to="/api/login" /> }, 
             ],
         },
     ]);

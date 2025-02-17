@@ -30,7 +30,11 @@ const PostSchema = new Schema({
         type: String,  // Add password field
         required: false,
         default: null  // Default value for new documents
-    }
+    },
+    sharedWith: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }]
 }, {
     collection: 'posts',
     timestamps: true

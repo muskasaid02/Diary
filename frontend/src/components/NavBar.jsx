@@ -1,3 +1,4 @@
+// NavBar.jsx
 import { Link } from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { useLogout } from '../hooks/useLogout.js';
@@ -22,8 +23,8 @@ const NavBar = () => {
         <AppBar
             position="static"
             sx={{
-                backgroundColor: "#1976d2", // Always blue
-                height: '56px', // Adjust height slightly
+                backgroundColor: "#1976d2",
+                height: '56px',
                 display: 'flex',
                 justifyContent: 'center',
             }}
@@ -34,11 +35,10 @@ const NavBar = () => {
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        minHeight: 'unset', // Remove default Material-UI minHeight
-                        padding: '0 10px', // Reduce vertical padding
+                        minHeight: 'unset',
+                        padding: '0 10px',
                     }}
                 >
-                    {/* Left: Home and Calendar Links */}
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Typography
                             variant="h6"
@@ -62,7 +62,7 @@ const NavBar = () => {
                             component="div"
                             sx={{
                                 fontSize: '1rem',
-                                marginLeft: '20px', // Spacing between Home and Calendar
+                                marginLeft: '20px',
                             }}
                         >
                             <Link
@@ -75,6 +75,26 @@ const NavBar = () => {
                                 Calendar
                             </Link>
                         </Typography>
+                        {user && (
+                            <Typography
+                                variant="h6"
+                                component="div"
+                                sx={{
+                                    fontSize: '1rem',
+                                    marginLeft: '20px',
+                                }}
+                            >
+                                <Link
+                                    to="/profile"
+                                    style={{
+                                        color: 'white',
+                                        textDecoration: 'none',
+                                    }}
+                                >
+                                    Profile
+                                </Link>
+                            </Typography>
+                        )}
                     </Box>
 
                     {/* Center: App Title */}
@@ -91,12 +111,10 @@ const NavBar = () => {
 
                     {/* Right: Theme Toggle and Auth Buttons */}
                     <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                        {/* Theme Toggle */}
                         <Button color="inherit" onClick={toggleTheme} sx={{ minWidth: 'auto', padding: 0 }}>
                             {theme === 'light' ? <FaMoon /> : <FaSun />}
                         </Button>
 
-                        {/* Auth Buttons */}
                         {user ? (
                             <>
                                 <Typography

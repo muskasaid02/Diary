@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { usePostsContext } from '../hooks/usePostsContext';
@@ -11,9 +11,20 @@ import {
    IconButton,
    Stack,
    Box,
+   Dialog,
+   DialogTitle,
+   DialogContent,
+   DialogActions,
+   Button,
+   List,
+   ListItemText,
+   Checkbox,
+   Snackbar,
+   Alert
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import ShareIcon from '@mui/icons-material/Share';
 import EditPostForm from './EditPostForm';
 
 const PostHead = ({ post }) => {
@@ -21,10 +32,34 @@ const PostHead = ({ post }) => {
    const { user } = useAuthContext();
    const { theme } = useContext(ThemeContext);
    const [editDialogOpen, setEditDialogOpen] = useState(false);
+   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+   const [collaborators, setCollaborators] = useState([]);
+   const [selectedCollaborators, setSelectedCollaborators] = useState([]);
+   const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
+
+   useEffect(() => {
+       const fetchCollaborators = async () => {
+           try {
+               const response = await fetch('http://localhost:4000/api/user/collaborators', {
+                   headers: {
+                       'Authorization': `Bearer ${user.token}`
+                   }
+               });
+               const json = await response.json();
+               if (response.ok) {
+                   setCollaborators(json);
+               }
+           } catch (error) {
+               console.error('Error fetching collaborators:', error);
+           }
+       };
+
+       fetchCollaborators();
+   }, [user]);
 
    const handleClick = async () => {
        const response = await fetch(
-           `https://diary-backend-utp0.onrender.com/api/posts/${post._id}`,
+           `http://localhost:4000/api/posts/${post._id}`,
            {
                method: 'DELETE',
                headers: {
@@ -39,6 +74,44 @@ const PostHead = ({ post }) => {
            console.log('Post deleted:', post._id);
        } else {
            console.error('Failed to delete post:', response.statusText);
+       }
+   };
+
+   const handleShare = async () => {
+       try {
+           const response = await fetch(`http://localhost:4000/api/posts/${post._id}/share`, {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/json',
+                   'Authorization': `Bearer ${user.token}`
+               },
+               body: JSON.stringify({
+                   collaboratorIds: selectedCollaborators
+               })
+           });
+
+           if (response.ok) {
+               setShareDialogOpen(false);
+               setSelectedCollaborators([]);
+               setNotification({
+                   open: true,
+                   message: 'Post shared successfully!',
+                   severity: 'success'
+               });
+           } else {
+               setNotification({
+                   open: true,
+                   message: 'Failed to share post',
+                   severity: 'error'
+               });
+           }
+       } catch (error) {
+           console.error('Error sharing post:', error);
+           setNotification({
+               open: true,
+               message: 'Error sharing post',
+               severity: 'error'
+           });
        }
    };
 
@@ -57,35 +130,35 @@ const PostHead = ({ post }) => {
    };
 
    const titleStyle = {
-       color: theme === 'dark' ? '#bbdefb' : '#1565c0',
-       textDecoration: 'none',
-       fontWeight: 'bold',
-       fontSize: '1.5rem',
-       marginBottom: '0.5rem',
-       '&:hover': {
-           color: theme === 'dark' ? '#90caf9' : '#1a73e8',
-       },
-   };
+    color: theme === 'dark' ? '#bbdefb' : '#1565c0',
+    textDecoration: 'none',
+    fontWeight: 'bold',
+    fontSize: '1.5rem',
+    marginBottom: '0.5rem',
+    '&:hover': {
+        color: theme === 'dark' ? '#90caf9' : '#1a73e8',
+        },
+    };
 
    const dateStyle = {
-       color: theme === 'dark' ? '#e0e0e0' : '#757575',
-       fontSize: '0.875rem',
-       marginBottom: '1rem',
-   };
+    color: theme === 'dark' ? '#e0e0e0' : '#757575',
+    fontSize: '0.875rem',
+    marginBottom: '1rem',
+};
 
-   const contentStyle = {
-       color: theme === 'dark' ? '#f5f5f5' : '#212121',
-       fontSize: '1rem',
-       overflow: 'hidden',
-       display: '-webkit-box',
-       WebkitLineClamp: 3,
-       WebkitBoxOrient: 'vertical',
-       textOverflow: 'ellipsis',
-       whiteSpace: 'normal',
-       flex: 1
-   };
+const contentStyle = {
+    color: theme === 'dark' ? '#f5f5f5' : '#212121',
+    fontSize: '1rem',
+    overflow: 'hidden',
+    display: '-webkit-box',
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: 'vertical',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'normal',
+    flex: 1
+};
 
-   const moodStyle = {
+const moodStyle = {
     color: theme === 'dark' ? '#e0e0e0' : '#757575',
     fontSize: '0.875rem',
     display: 'flex',
@@ -93,92 +166,176 @@ const PostHead = ({ post }) => {
     gap: '4px'
 };
 
-   const handleEditClick = (e) => {
-       e.stopPropagation();
-       setEditDialogOpen(true);
-   };
+const handleEditClick = (e) => {
+    e.stopPropagation();
+    setEditDialogOpen(true);
+};
 
-   return (
-       <>
-           <ListItem sx={postStyle}>
-               <Stack
-                   direction="column"
-                   spacing={1}
-                   sx={{ height: '100%' }}
-               >
-                   <Stack
-                       direction="row"
-                       justifyContent="space-between"
-                       alignItems="center"
-                   >
-                       <Typography
-                           component={Link}
-                           to={`/api/posts/${post._id}`}
-                           sx={titleStyle}
-                       >
-                           {post.title}
-                       </Typography>
+return (
+    <>
+        <ListItem sx={postStyle}>
+            <Stack
+                direction="column"
+                spacing={1}
+                sx={{ height: '100%' }}
+            >
+                <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                >
+                    <Typography
+                        component={Link}
+                        to={`/api/posts/${post._id}`}
+                        sx={titleStyle}
+                    >
+                        {post.title}
+                    </Typography>
 
-                       <Box sx={{ display: 'flex', gap: 1 }}>
-                           <IconButton
-                               onClick={handleEditClick}
-                               sx={{
-                                   color: theme === 'dark' ? '#90caf9' : '#1976d2',
-                                   '&:hover': {
-                                       backgroundColor: theme === 'dark'
-                                           ? 'rgba(144, 202, 249, 0.2)'
-                                           : 'rgba(25, 118, 210, 0.1)',
-                                   },
-                               }}
-                           >
-                               <EditIcon />
-                           </IconButton>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                        <IconButton
+                            onClick={() => setShareDialogOpen(true)}
+                            sx={{
+                                color: theme === 'dark' ? '#90caf9' : '#1976d2',
+                                '&:hover': {
+                                    backgroundColor: theme === 'dark'
+                                        ? 'rgba(144, 202, 249, 0.2)'
+                                        : 'rgba(25, 118, 210, 0.1)',
+                                },
+                            }}
+                        >
+                            <ShareIcon />
+                        </IconButton>
 
-                           <IconButton
-                               onClick={(e) => {
-                                   e.stopPropagation();
-                                   handleClick();
-                               }}
-                               sx={{
-                                   color: theme === 'dark' ? '#e57373' : '#d32f2f',
-                                   '&:hover': {
-                                       backgroundColor: theme === 'dark'
-                                           ? 'rgba(229, 115, 115, 0.2)'
-                                           : 'rgba(211, 47, 47, 0.1)',
-                                   },
-                               }}
-                           >
-                               <DeleteIcon />
-                           </IconButton>
-                       </Box>
-                   </Stack>
+                        <IconButton
+                            onClick={handleEditClick}
+                            sx={{
+                                color: theme === 'dark' ? '#90caf9' : '#1976d2',
+                                '&:hover': {
+                                    backgroundColor: theme === 'dark'
+                                        ? 'rgba(144, 202, 249, 0.2)'
+                                        : 'rgba(25, 118, 210, 0.1)',
+                                },
+                            }}
+                        >
+                            <EditIcon />
+                        </IconButton>
 
-                   <Typography variant="body2" sx={dateStyle}>
-                       {format(new Date(post.date), 'MMMM d, y')}
-                   </Typography>
+                        <IconButton
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleClick();
+                            }}
+                            sx={{
+                                color: theme === 'dark' ? '#e57373' : '#d32f2f',
+                                '&:hover': {
+                                    backgroundColor: theme === 'dark'
+                                        ? 'rgba(229, 115, 115, 0.2)'
+                                        : 'rgba(211, 47, 47, 0.1)',
+                                },
+                            }}
+                        >
+                            <DeleteIcon />
+                        </IconButton>
+                    </Box>
+                </Stack>
 
-                                   {/* Mood Display */}
+                <Typography variant="body2" sx={dateStyle}>
+                    {format(new Date(post.date), 'MMMM d, y')}
+                </Typography>
+
                 <Box sx={moodStyle}>
                     <MoodIcon />
                     <span>{post.mood}</span>
                 </Box>
 
-                   <Typography
-                       variant="body1"
-                       sx={contentStyle}
-                       dangerouslySetInnerHTML={{ __html: post.content }}
-                   />
-               </Stack>
-           </ListItem>
-           
-           <EditPostForm 
-               post={post}
-               open={editDialogOpen}
-               onClose={() => setEditDialogOpen(false)}
-               theme={theme}
-           />
-       </>
-   );
+                <Typography
+                    variant="body1"
+                    sx={contentStyle}
+                    dangerouslySetInnerHTML={{ __html: post.content }}
+                />
+            </Stack>
+        </ListItem>
+        
+        <EditPostForm 
+            post={post}
+            open={editDialogOpen}
+            onClose={() => setEditDialogOpen(false)}
+            theme={theme}
+        />
+
+        {/* Share Dialog */}
+        <Dialog
+            open={shareDialogOpen}
+            onClose={() => setShareDialogOpen(false)}
+            PaperProps={{
+                sx: {
+                    backgroundColor: theme === 'dark' ? '#424242' : '#fff',
+                    color: theme === 'dark' ? '#fff' : '#000',
+                }
+            }}
+        >
+            <DialogTitle>Share with Collaborators</DialogTitle>
+            <DialogContent>
+                {collaborators.length > 0 ? (
+                    <List>
+                        {collaborators.map((collaborator) => (
+                            <ListItem key={collaborator._id}>
+                                <Checkbox
+                                    checked={selectedCollaborators.includes(collaborator._id)}
+                                    onChange={(e) => {
+                                        if (e.target.checked) {
+                                            setSelectedCollaborators([...selectedCollaborators, collaborator._id]);
+                                        } else {
+                                            setSelectedCollaborators(
+                                                selectedCollaborators.filter(id => id !== collaborator._id)
+                                            );
+                                        }
+                                    }}
+                                    sx={{
+                                        color: theme === 'dark' ? '#90caf9' : '#1976d2',
+                                        '&.Mui-checked': {
+                                            color: theme === 'dark' ? '#90caf9' : '#1976d2',
+                                        },
+                                    }}
+                                />
+                                <ListItemText primary={collaborator.email} />
+                            </ListItem>
+                        ))}
+                    </List>
+                ) : (
+                    <Typography>No collaborators yet. Add them in your profile.</Typography>
+                )}
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={() => setShareDialogOpen(false)}>Cancel</Button>
+                <Button 
+                    onClick={handleShare} 
+                    variant="contained" 
+                    color="primary"
+                    disabled={selectedCollaborators.length === 0}
+                >
+                    Share
+                </Button>
+            </DialogActions>
+        </Dialog>
+
+        {/* Notification Snackbar */}
+        <Snackbar
+            open={notification.open}
+            autoHideDuration={6000}
+            onClose={() => setNotification({ ...notification, open: false })}
+        >
+            <Alert
+                onClose={() => setNotification({ ...notification, open: false })}
+                severity={notification.severity}
+                sx={{ width: '100%' }}
+            >
+                {notification.message}
+            </Alert>
+        </Snackbar>
+    </>
+);
 };
 
 export default PostHead;
