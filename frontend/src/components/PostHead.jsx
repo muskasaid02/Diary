@@ -81,13 +81,17 @@ const PostHead = ({ post }) => {
 
    const handleShare = async () => {
     try {
-        // Only send collaborators that aren't already shared with
         const newCollaborators = selectedCollaborators.filter(
             id => !sharedWith.includes(id)
         );
 
         if (newCollaborators.length === 0) {
             setShareDialogOpen(false);
+            setNotification({
+                open: true,
+                message: 'No new collaborators to share with',
+                severity: 'info'
+            });
             return;
         }
 
@@ -107,11 +111,26 @@ const PostHead = ({ post }) => {
             setSharedWith(data.sharedWith);
             setShareDialogOpen(false);
             setSelectedCollaborators([]);
+            setNotification({
+                open: true,
+                message: 'Post shared successfully!',
+                severity: 'success'
+            });
         }
     } catch (error) {
         console.error('Error sharing post:', error);
+        setNotification({
+            open: true,
+            message: 'Error sharing post',
+            severity: 'error'
+        });
     }
 };
+
+   const handleEditClick = (e) => {
+       e.stopPropagation();
+       setEditDialogOpen(true);
+   };
 
    const postStyle = {
        backgroundColor: theme === 'dark' ? '#424242' : '#fff',
@@ -128,262 +147,147 @@ const PostHead = ({ post }) => {
    };
 
    const titleStyle = {
-    color: theme === 'dark' ? '#bbdefb' : '#1565c0',
-    textDecoration: 'none',
-    fontWeight: 'bold',
-    fontSize: '1.5rem',
-    marginBottom: '0.5rem',
-    '&:hover': {
-        color: theme === 'dark' ? '#90caf9' : '#1a73e8',
-        },
-    };
+       color: theme === 'dark' ? '#bbdefb' : '#1565c0',
+       textDecoration: 'none',
+       fontWeight: 'bold',
+       fontSize: '1.5rem',
+       marginBottom: '0.5rem',
+       '&:hover': {
+           color: theme === 'dark' ? '#90caf9' : '#1a73e8',
+       },
+   };
 
    const dateStyle = {
-    color: theme === 'dark' ? '#e0e0e0' : '#757575',
-    fontSize: '0.875rem',
-    marginBottom: '1rem',
-};
+       color: theme === 'dark' ? '#e0e0e0' : '#757575',
+       fontSize: '0.875rem',
+       marginBottom: '1rem',
+   };
 
-const contentStyle = {
-    color: theme === 'dark' ? '#f5f5f5' : '#212121',
-    fontSize: '1rem',
-    overflow: 'hidden',
-    display: '-webkit-box',
-    WebkitLineClamp: 3,
-    WebkitBoxOrient: 'vertical',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'normal',
-    flex: 1
-};
+   const contentStyle = {
+       color: theme === 'dark' ? '#f5f5f5' : '#212121',
+       fontSize: '1rem',
+       overflow: 'hidden',
+       display: '-webkit-box',
+       WebkitLineClamp: 3,
+       WebkitBoxOrient: 'vertical',
+       textOverflow: 'ellipsis',
+       whiteSpace: 'normal',
+       flex: 1
+   };
 
-const moodStyle = {
-    color: theme === 'dark' ? '#e0e0e0' : '#757575',
-    fontSize: '0.875rem',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '4px'
-};
+   const moodStyle = {
+       color: theme === 'dark' ? '#e0e0e0' : '#757575',
+       fontSize: '0.875rem',
+       display: 'flex',
+       alignItems: 'center',
+       gap: '4px'
+   };
 
-const handleEditClick = (e) => {
-    e.stopPropagation();
-    setEditDialogOpen(true);
-};
+   return (
+       <>
+           <ListItem sx={postStyle}>
+               <Stack
+                   direction="column"
+                   spacing={1}
+                   sx={{ height: '100%' }}
+               >
+                   <Stack
+                       direction="row"
+                       justifyContent="space-between"
+                       alignItems="center"
+                   >
+                       <Typography
+                           component={Link}
+                           to={`/api/posts/${post._id}`}
+                           sx={titleStyle}
+                       >
+                           {post.title}
+                       </Typography>
 
-return (
-    <>
-        <ListItem sx={postStyle}>
-            <Stack
-                direction="column"
-                spacing={1}
-                sx={{ height: '100%' }}
-            >
-                <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                >
-                    <Typography
-                        component={Link}
-                        to={`/api/posts/${post._id}`}
-                        sx={titleStyle}
-                    >
-                        {post.title}
-                    </Typography>
+                       <Box sx={{ display: 'flex', gap: 1 }}>
+                           <IconButton
+                               onClick={() => setShareDialogOpen(true)}
+                               sx={{
+                                   color: theme === 'dark' ? '#90caf9' : '#1976d2',
+                                   '&:hover': {
+                                       backgroundColor: theme === 'dark'
+                                           ? 'rgba(144, 202, 249, 0.2)'
+                                           : 'rgba(25, 118, 210, 0.1)',
+                                   },
+                               }}
+                           >
+                               <ShareIcon />
+                           </IconButton>
 
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                        <IconButton
-                            onClick={() => setShareDialogOpen(true)}
-                            sx={{
-                                color: theme === 'dark' ? '#90caf9' : '#1976d2',
-                                '&:hover': {
-                                    backgroundColor: theme === 'dark'
-                                        ? 'rgba(144, 202, 249, 0.2)'
-                                        : 'rgba(25, 118, 210, 0.1)',
-                                },
-                            }}
-                        >
-                            <ShareIcon />
-                        </IconButton>
+                           <IconButton
+                               onClick={handleEditClick}
+                               sx={{
+                                   color: theme === 'dark' ? '#90caf9' : '#1976d2',
+                                   '&:hover': {
+                                       backgroundColor: theme === 'dark'
+                                           ? 'rgba(144, 202, 249, 0.2)'
+                                           : 'rgba(25, 118, 210, 0.1)',
+                                   },
+                               }}
+                           >
+                               <EditIcon />
+                           </IconButton>
 
-                        <IconButton
-                            onClick={handleEditClick}
-                            sx={{
-                                color: theme === 'dark' ? '#90caf9' : '#1976d2',
-                                '&:hover': {
-                                    backgroundColor: theme === 'dark'
-                                        ? 'rgba(144, 202, 249, 0.2)'
-                                        : 'rgba(25, 118, 210, 0.1)',
-                                },
-                            }}
-                        >
-                            <EditIcon />
-                        </IconButton>
+                           <IconButton
+                               onClick={(e) => {
+                                   e.stopPropagation();
+                                   handleClick();
+                               }}
+                               sx={{
+                                   color: theme === 'dark' ? '#e57373' : '#d32f2f',
+                                   '&:hover': {
+                                       backgroundColor: theme === 'dark'
+                                           ? 'rgba(229, 115, 115, 0.2)'
+                                           : 'rgba(211, 47, 47, 0.1)',
+                                   },
+                               }}
+                           >
+                               <DeleteIcon />
+                           </IconButton>
+                       </Box>
+                   </Stack>
 
-                        <IconButton
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleClick();
-                            }}
-                            sx={{
-                                color: theme === 'dark' ? '#e57373' : '#d32f2f',
-                                '&:hover': {
-                                    backgroundColor: theme === 'dark'
-                                        ? 'rgba(229, 115, 115, 0.2)'
-                                        : 'rgba(211, 47, 47, 0.1)',
-                                },
-                            }}
-                        >
-                            <DeleteIcon />
-                        </IconButton>
-                    </Box>
-                </Stack>
+                   <Typography variant="body2" sx={dateStyle}>
+                       {format(new Date(post.date), 'MMMM d, y')}
+                   </Typography>
 
-                <Typography variant="body2" sx={dateStyle}>
-                    {format(new Date(post.date), 'MMMM d, y')}
-                </Typography>
+                   <Box sx={moodStyle}>
+                       <MoodIcon />
+                       <span>{post.mood}</span>
+                   </Box>
 
-                <Box sx={moodStyle}>
-                    <MoodIcon />
-                    <span>{post.mood}</span>
-                </Box>
-
-                <Typography
-                    variant="body1"
-                    sx={contentStyle}
-                    dangerouslySetInnerHTML={{ __html: post.content }}
-                />
-            </Stack>
-        </ListItem>
-        
-        <EditPostForm 
-            post={post}
-            open={editDialogOpen}
-            onClose={() => setEditDialogOpen(false)}
-            theme={theme}
-        />
-
-        {/* Share Dialog */}
-        <Dialog
-    open={shareDialogOpen}
-    onClose={() => {
-        setShareDialogOpen(false);
-        setSelectedCollaborators([]);
-    }}
-    PaperProps={{
-        sx: {
-            backgroundColor: theme === 'dark' ? '#424242' : '#fff',
-            color: theme === 'dark' ? '#fff' : '#000',
-        }
-    }}
->
-    <DialogTitle>Share with Collaborators</DialogTitle>
-    <DialogContent>
-        {collaborators.length > 0 ? (
-            <List>
-                {collaborators.map((collaborator) => (
-                    <ListItem key={collaborator._id}>
-                        <Checkbox
-                            checked={selectedCollaborators.includes(collaborator._id) || 
-                                   sharedWith.includes(collaborator._id)}
-                            disabled={sharedWith.includes(collaborator._id)}
-                            onChange={(e) => {
-                                if (e.target.checked) {
-                                    setSelectedCollaborators([...selectedCollaborators, collaborator._id]);
-                                } else {
-                                    setSelectedCollaborators(
-                                        selectedCollaborators.filter(id => id !== collaborator._id)
-                                    );
-                                }
-                            }}
-                            sx={{
-                                color: theme === 'dark' ? '#90caf9' : '#1976d2',
-                                '&.Mui-checked': {
-                                    color: theme === 'dark' ? '#90caf9' : '#1976d2',
-                                },
-                                '&.Mui-disabled': {
-                                    color: theme === 'dark' ? '#666' : '#bbb',
-                                },
-                            }}
-                        />
-                        <ListItemText 
-                            primary={collaborator.email}
-                            secondary={sharedWith.includes(collaborator._id) ? '(Already shared)' : ''}
-                            sx={{
-                                '& .MuiListItemText-secondary': {
-                                    color: theme === 'dark' ? '#aaa' : '#666',
-                                }
-                            }}
-                        />
-                    </ListItem>
-                ))}
-            </List>
-        ) : (
-            <Typography>No collaborators yet. Add them in your profile.</Typography>
-        )}
-    </DialogContent>
-    <DialogActions>
-        <Button 
-            onClick={() => {
-                setShareDialogOpen(false);
-                setSelectedCollaborators([]);
-            }}
-        >
-            Cancel
-        </Button>
-        <Button 
-            onClick={handleShare} 
-            variant="contained" 
-            color="primary"
-            disabled={selectedCollaborators.length === 0 || 
-                     selectedCollaborators.every(id => sharedWith.includes(id))}
-        >
-            Share
-        </Button>
-    </DialogActions>
-</Dialog>
-
-        {/* Notification Snackbar */}
-        <Snackbar
-            open={notification.open}
-            autoHideDuration={6000}
-            onClose={() => setNotification({ ...notification, open: false })}
-        >
-            <Alert
-                onClose={() => setNotification({ ...notification, open: false })}
-                severity={notification.severity}
-                sx={{ width: '100%' }}
-            >
-                {notification.message}
-            </Alert>
-        </Snackbar>
-    </>
-);
                    <Typography
                        variant="body1"
                        sx={contentStyle}
                        dangerouslySetInnerHTML={{ __html: post.content }}
                    />
+
                    {post.tags && post.tags.length > 0 && (
-                        <Box sx={{ 
-                            display: 'flex', 
-                            flexWrap: 'wrap', 
-                            gap: 0.5, 
-                            mt: 1 
-                        }}>
-                            {post.tags.map((tag, index) => (
-                                <Chip
-                                    key={index}
-                                    label={tag}
-                                    size="small"
-                                    color="primary"
-                                    variant="outlined"
-                                    sx={{
-                                        backgroundColor: theme === 'dark' ? 'rgba(144, 202, 249, 0.08)' : 'rgba(25, 118, 210, 0.08)',
-                                    }}
-                                />
-                            ))}
-                        </Box>
-                    )}
+                       <Box sx={{ 
+                           display: 'flex', 
+                           flexWrap: 'wrap', 
+                           gap: 0.5, 
+                           mt: 1 
+                       }}>
+                           {post.tags.map((tag, index) => (
+                               <Chip
+                                   key={index}
+                                   label={tag}
+                                   size="small"
+                                   color="primary"
+                                   variant="outlined"
+                                   sx={{
+                                       backgroundColor: theme === 'dark' ? 'rgba(144, 202, 249, 0.08)' : 'rgba(25, 118, 210, 0.08)',
+                                   }}
+                               />
+                           ))}
+                       </Box>
+                   )}
                </Stack>
            </ListItem>
            
@@ -393,6 +297,101 @@ return (
                onClose={() => setEditDialogOpen(false)}
                theme={theme}
            />
+
+           {/* Share Dialog */}
+           <Dialog
+               open={shareDialogOpen}
+               onClose={() => {
+                   setShareDialogOpen(false);
+                   setSelectedCollaborators([]);
+               }}
+               PaperProps={{
+                   sx: {
+                       backgroundColor: theme === 'dark' ? '#424242' : '#fff',
+                       color: theme === 'dark' ? '#fff' : '#000',
+                   }
+               }}
+           >
+               <DialogTitle>Share with Collaborators</DialogTitle>
+               <DialogContent>
+                   {collaborators.length > 0 ? (
+                       <List>
+                           {collaborators.map((collaborator) => (
+                               <ListItem key={collaborator._id}>
+                                   <Checkbox
+                                       checked={selectedCollaborators.includes(collaborator._id) || 
+                                              sharedWith.includes(collaborator._id)}
+                                       disabled={sharedWith.includes(collaborator._id)}
+                                       onChange={(e) => {
+                                           if (e.target.checked) {
+                                               setSelectedCollaborators([...selectedCollaborators, collaborator._id]);
+                                           } else {
+                                               setSelectedCollaborators(
+                                                   selectedCollaborators.filter(id => id !== collaborator._id)
+                                               );
+                                           }
+                                       }}
+                                       sx={{
+                                           color: theme === 'dark' ? '#90caf9' : '#1976d2',
+                                           '&.Mui-checked': {
+                                               color: theme === 'dark' ? '#90caf9' : '#1976d2',
+                                           },
+                                           '&.Mui-disabled': {
+                                               color: theme === 'dark' ? '#666' : '#bbb',
+                                           },
+                                       }}
+                                   />
+                                   <ListItemText 
+                                       primary={collaborator.email}
+                                       secondary={sharedWith.includes(collaborator._id) ? '(Already shared)' : ''}
+                                       sx={{
+                                           '& .MuiListItemText-secondary': {
+                                               color: theme === 'dark' ? '#aaa' : '#666',
+                                           }
+                                       }}
+                                   />
+                               </ListItem>
+                           ))}
+                       </List>
+                   ) : (
+                       <Typography>No collaborators yet. Add them in your profile.</Typography>
+                   )}
+               </DialogContent>
+               <DialogActions>
+                   <Button 
+                       onClick={() => {
+                           setShareDialogOpen(false);
+                           setSelectedCollaborators([]);
+                       }}
+                   >
+                       Cancel
+                   </Button>
+                   <Button 
+                       onClick={handleShare} 
+                       variant="contained" 
+                       color="primary"
+                       disabled={selectedCollaborators.length === 0 || 
+                                selectedCollaborators.every(id => sharedWith.includes(id))}
+                   >
+                       Share
+                   </Button>
+               </DialogActions>
+           </Dialog>
+
+           {/* Notification Snackbar */}
+           <Snackbar
+               open={notification.open}
+               autoHideDuration={6000}
+               onClose={() => setNotification({ ...notification, open: false })}
+           >
+               <Alert
+                   onClose={() => setNotification({ ...notification, open: false })}
+                   severity={notification.severity}
+                   sx={{ width: '100%' }}
+               >
+                   {notification.message}
+               </Alert>
+           </Snackbar>
        </>
    );
 };
