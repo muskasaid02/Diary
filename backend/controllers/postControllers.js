@@ -192,22 +192,31 @@ export const verifyPassword = async (req, res) => {
 };
 
 export const sharePost = async (req, res) => {
-    const { id } = req.params;
-    const { collaboratorIds } = req.body;
+    const { id } = req.params;
+    const { collaboratorIds } = req.body;
 
-    try {
-        const post = await Post.findOne({ _id: id, user_id: req.user._id });
-        
-        if (!post) {
-            return res.status(404).json({ error: 'Post not found' });
-        }
+    try {
+        const post = await Post.findOne({ _id: id, user_id: req.user._id });
+        
+        if (!post) {
+            return res.status(404).json({ error: 'Post not found' });
+        }
 
-        // Add new collaborators
-        post.sharedWith = [...new Set([...post.sharedWith, ...collaboratorIds])];
-        await post.save();
+        // Filter out collaborators that are already in sharedWith
+        const newCollaborators = collaboratorIds.filter(id => 
+            !post.sharedWith.includes(id)
+        );
 
-        res.status(200).json(post);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
+        if (newCollaborators.length > 0) {
+            post.sharedWith = [...post.sharedWith, ...newCollaborators];
+            await post.save();
+        }
+
+        res.status(200).json({
+            message: 'Post shared successfully',
+            sharedWith: post.sharedWith
+        });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
 };

@@ -36,6 +36,7 @@ const PostHead = ({ post }) => {
    const [collaborators, setCollaborators] = useState([]);
    const [selectedCollaborators, setSelectedCollaborators] = useState([]);
    const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
+   const [sharedWith, setSharedWith] = useState(post.sharedWith || []);
 
    useEffect(() => {
        const fetchCollaborators = async () => {
@@ -78,42 +79,38 @@ const PostHead = ({ post }) => {
    };
 
    const handleShare = async () => {
-       try {
-           const response = await fetch(`http://localhost:4000/api/posts/${post._id}/share`, {
-               method: 'POST',
-               headers: {
-                   'Content-Type': 'application/json',
-                   'Authorization': `Bearer ${user.token}`
-               },
-               body: JSON.stringify({
-                   collaboratorIds: selectedCollaborators
-               })
-           });
+    try {
+        // Only send collaborators that aren't already shared with
+        const newCollaborators = selectedCollaborators.filter(
+            id => !sharedWith.includes(id)
+        );
 
-           if (response.ok) {
-               setShareDialogOpen(false);
-               setSelectedCollaborators([]);
-               setNotification({
-                   open: true,
-                   message: 'Post shared successfully!',
-                   severity: 'success'
-               });
-           } else {
-               setNotification({
-                   open: true,
-                   message: 'Failed to share post',
-                   severity: 'error'
-               });
-           }
-       } catch (error) {
-           console.error('Error sharing post:', error);
-           setNotification({
-               open: true,
-               message: 'Error sharing post',
-               severity: 'error'
-           });
-       }
-   };
+        if (newCollaborators.length === 0) {
+            setShareDialogOpen(false);
+            return;
+        }
+
+        const response = await fetch(`http://localhost:4000/api/posts/${post._id}/share`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user.token}`
+            },
+            body: JSON.stringify({
+                collaboratorIds: newCollaborators
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            setSharedWith(data.sharedWith);
+            setShareDialogOpen(false);
+            setSelectedCollaborators([]);
+        }
+    } catch (error) {
+        console.error('Error sharing post:', error);
+    }
+};
 
    const postStyle = {
        backgroundColor: theme === 'dark' ? '#424242' : '#fff',
@@ -266,59 +263,83 @@ return (
 
         {/* Share Dialog */}
         <Dialog
-            open={shareDialogOpen}
-            onClose={() => setShareDialogOpen(false)}
-            PaperProps={{
-                sx: {
-                    backgroundColor: theme === 'dark' ? '#424242' : '#fff',
-                    color: theme === 'dark' ? '#fff' : '#000',
-                }
+    open={shareDialogOpen}
+    onClose={() => {
+        setShareDialogOpen(false);
+        setSelectedCollaborators([]);
+    }}
+    PaperProps={{
+        sx: {
+            backgroundColor: theme === 'dark' ? '#424242' : '#fff',
+            color: theme === 'dark' ? '#fff' : '#000',
+        }
+    }}
+>
+    <DialogTitle>Share with Collaborators</DialogTitle>
+    <DialogContent>
+        {collaborators.length > 0 ? (
+            <List>
+                {collaborators.map((collaborator) => (
+                    <ListItem key={collaborator._id}>
+                        <Checkbox
+                            checked={selectedCollaborators.includes(collaborator._id) || 
+                                   sharedWith.includes(collaborator._id)}
+                            disabled={sharedWith.includes(collaborator._id)}
+                            onChange={(e) => {
+                                if (e.target.checked) {
+                                    setSelectedCollaborators([...selectedCollaborators, collaborator._id]);
+                                } else {
+                                    setSelectedCollaborators(
+                                        selectedCollaborators.filter(id => id !== collaborator._id)
+                                    );
+                                }
+                            }}
+                            sx={{
+                                color: theme === 'dark' ? '#90caf9' : '#1976d2',
+                                '&.Mui-checked': {
+                                    color: theme === 'dark' ? '#90caf9' : '#1976d2',
+                                },
+                                '&.Mui-disabled': {
+                                    color: theme === 'dark' ? '#666' : '#bbb',
+                                },
+                            }}
+                        />
+                        <ListItemText 
+                            primary={collaborator.email}
+                            secondary={sharedWith.includes(collaborator._id) ? '(Already shared)' : ''}
+                            sx={{
+                                '& .MuiListItemText-secondary': {
+                                    color: theme === 'dark' ? '#aaa' : '#666',
+                                }
+                            }}
+                        />
+                    </ListItem>
+                ))}
+            </List>
+        ) : (
+            <Typography>No collaborators yet. Add them in your profile.</Typography>
+        )}
+    </DialogContent>
+    <DialogActions>
+        <Button 
+            onClick={() => {
+                setShareDialogOpen(false);
+                setSelectedCollaborators([]);
             }}
         >
-            <DialogTitle>Share with Collaborators</DialogTitle>
-            <DialogContent>
-                {collaborators.length > 0 ? (
-                    <List>
-                        {collaborators.map((collaborator) => (
-                            <ListItem key={collaborator._id}>
-                                <Checkbox
-                                    checked={selectedCollaborators.includes(collaborator._id)}
-                                    onChange={(e) => {
-                                        if (e.target.checked) {
-                                            setSelectedCollaborators([...selectedCollaborators, collaborator._id]);
-                                        } else {
-                                            setSelectedCollaborators(
-                                                selectedCollaborators.filter(id => id !== collaborator._id)
-                                            );
-                                        }
-                                    }}
-                                    sx={{
-                                        color: theme === 'dark' ? '#90caf9' : '#1976d2',
-                                        '&.Mui-checked': {
-                                            color: theme === 'dark' ? '#90caf9' : '#1976d2',
-                                        },
-                                    }}
-                                />
-                                <ListItemText primary={collaborator.email} />
-                            </ListItem>
-                        ))}
-                    </List>
-                ) : (
-                    <Typography>No collaborators yet. Add them in your profile.</Typography>
-                )}
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={() => setShareDialogOpen(false)}>Cancel</Button>
-                <Button 
-                    onClick={handleShare} 
-                    variant="contained" 
-                    color="primary"
-                    disabled={selectedCollaborators.length === 0}
-                >
-                    Share
-                </Button>
-            </DialogActions>
-        </Dialog>
+            Cancel
+        </Button>
+        <Button 
+            onClick={handleShare} 
+            variant="contained" 
+            color="primary"
+            disabled={selectedCollaborators.length === 0 || 
+                     selectedCollaborators.every(id => sharedWith.includes(id))}
+        >
+            Share
+        </Button>
+    </DialogActions>
+</Dialog>
 
         {/* Notification Snackbar */}
         <Snackbar
