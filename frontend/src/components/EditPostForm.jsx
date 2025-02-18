@@ -26,6 +26,7 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
     const [content, setContent] = useState(post.content);
     const [date, setDate] = useState(new Date(post.date).toISOString().split('T')[0]);
 
+
     useEffect(() => {
         if (!open) {
             setIsPasswordVerified(!post.password);
@@ -91,10 +92,13 @@ const EditPostForm = ({ post, open, onClose, theme }) => {
             const json = await response.json();
 
             if (response.ok) {
+
+
                 const completeUpdatedPost = {
                     ...post,
                     ...updatedPost,
                 };
+              
                 dispatch({ type: 'UPDATE_POST', payload: completeUpdatedPost });
                 onClose();
             } else {
