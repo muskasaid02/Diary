@@ -34,7 +34,11 @@ const PostSchema = new Schema({
     sharedWith: [{
         type: Schema.Types.ObjectId,
         ref: 'User'
-    }]
+    }],
+    tags: {
+        type: [String],
+        default: []
+    }
 }, {
     collection: 'posts',
     timestamps: true

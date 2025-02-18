@@ -20,7 +20,8 @@ import {
    ListItemText,
    Checkbox,
    Snackbar,
-   Alert
+   Alert,
+   Chip,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -357,6 +358,43 @@ return (
         </Snackbar>
     </>
 );
+                   <Typography
+                       variant="body1"
+                       sx={contentStyle}
+                       dangerouslySetInnerHTML={{ __html: post.content }}
+                   />
+                   {post.tags && post.tags.length > 0 && (
+                        <Box sx={{ 
+                            display: 'flex', 
+                            flexWrap: 'wrap', 
+                            gap: 0.5, 
+                            mt: 1 
+                        }}>
+                            {post.tags.map((tag, index) => (
+                                <Chip
+                                    key={index}
+                                    label={tag}
+                                    size="small"
+                                    color="primary"
+                                    variant="outlined"
+                                    sx={{
+                                        backgroundColor: theme === 'dark' ? 'rgba(144, 202, 249, 0.08)' : 'rgba(25, 118, 210, 0.08)',
+                                    }}
+                                />
+                            ))}
+                        </Box>
+                    )}
+               </Stack>
+           </ListItem>
+           
+           <EditPostForm 
+               post={post}
+               open={editDialogOpen}
+               onClose={() => setEditDialogOpen(false)}
+               theme={theme}
+           />
+       </>
+   );
 };
 
 export default PostHead;

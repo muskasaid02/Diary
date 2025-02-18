@@ -83,42 +83,44 @@ export const getPost = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
-    const { date, title, content, password, mood } = req.body;
-    const user_id = req.user._id;
+    const { date, title, content, password, mood, tags } = req.body;
+    const user_id = req.user._id;
 
-    console.log("\n=== CREATE POST REQUEST ===");
-    console.log("Received password:", password ? "Yes (length: " + password.length + ")" : "No");
+    console.log("\n=== CREATE POST REQUEST ===");
+    console.log("Received password:", password ? "Yes (length: " + password.length + ")" : "No");
 
-    try {
-        let hashedPassword = null;
-        if (password) {
-            // Hash password only once here
-            const salt = await bcrypt.genSalt(10);
-            hashedPassword = await bcrypt.hash(password, salt);
-            
-            // Verify the hash immediately
-            const verifyTest = await bcrypt.compare(password, hashedPassword);
-            console.log("Password verification test:", verifyTest);
-        }
+    try {
+        let hashedPassword = null;
+        if (password) {
+            // Hash password only once here
+            const salt = await bcrypt.genSalt(10);
+            hashedPassword = await bcrypt.hash(password, salt);
+            
+            // Verify the hash immediately
+            const verifyTest = await bcrypt.compare(password, hashedPassword);
+            console.log("Password verification test:", verifyTest);
+        }
 
-        // Create post with single hashed password
-        const post = await Post.create({
-            date: new Date(date),
-            title,
-            content,
-            user_id,
-            mood,
-            password: hashedPassword
-        });
+        // Create post with single hashed password
+        const post = await Post.create({
+            date: new Date(date),
+            title,
+            content,
+            user_id,
+            mood,
+            password: hashedPassword,
+            tags: tags ? tags : []
+        });
 
-        console.log("Post created with ID:", post._id);
-        console.log("Stored password hash:", post.password);
+        console.log("Post created with ID:", post._id);
+        console.log("Stored password hash:", post.password);
+        console.log("Stored tags:", post.tags);
 
-        res.status(200).json(post);
-    } catch (err) {
-        console.error("Error in createPost:", err);
-        res.status(400).json({ error: err.message });
-    }
+        res.status(200).json(post);
+    } catch (err) {
+        console.error("Error in createPost:", err);
+        res.status(400).json({ error: err.message });
+    }
 };
 
 
