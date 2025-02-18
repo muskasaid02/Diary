@@ -10,12 +10,12 @@ const CalendarPage = () => {
         <Box
             sx={{
                 position: "fixed",
-                top: 50,
+                top: 60,
                 left: 0,
                 backgroundColor: theme === "dark" ? "#1c1c1c" : "white",
                 width: "100vw",
                 height: "100vh",
-                overflowY: "auto",  // Enables scrolling if needed
+                overflowY: "auto",  // Enables scrolling if needed 
                 textAlign: "center",  // Centers the heading and calendar horizontally
                 paddingTop: "20px",  // Adds spacing at the top
                 transition: "background-color 0.3s ease",
